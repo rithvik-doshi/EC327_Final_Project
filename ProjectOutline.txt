@@ -3,3 +3,11 @@ Project Outline
 by Rithvik Doshi, Johnson Yang, and Muhammed Abdalla
 
 Proposal: Develop an app linked to BU Calendar API
+
+Base Functionality: Enter a date and return all listed events through BU Calendar API
+
+Notes: Too simple, need to expand
+
+Ways to expand: 
+- Download specific events to add to a local calendar
+- Connect to Google Calendar as well to get personal events
