@@ -2,55 +2,40 @@
 
 #include <iostream>
 #include <string>
+#define PEMDAS {'+', '-', '*', '/', '(', ')', '^', '\\'};
+#define NUMBER {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 using std::cout;
 using std::cin;
 using std::string;
 using std::ostream;
 
-class contains_at{
-	public:
+//Rework this: -1 = false, 0 --> true and index
 
-		bool contains;
-		int index;
-
-		contains_at(){
-			this->contains = false;
-			this->index = 0;
-		}
-
-		static contains_at find(string str, char c){
-			contains_at out = contains_at();
-			for (int i = 0; i < str.size(); i++){
-				if (str.at(i) == c){
-					out.contains = true; out.index = i;
-				}
-			}
-			out.contains = false; out.index = -1;
-			return out;
-		}
-};
-
-ostream& operator<<(ostream& os, const contains_at& x){
-	os << x.contains << " " << x.index;
-	return os;
+int find(string str, char c){
+	for (int i = 0; i < str.size(); i++){
+		if (str.at(i) == c) return i;
+	}
+	return -1;
 }
+
+// string eval(string str){
+
+// }
 
 int main() {
 	string input;
 	cout << "Welcome to basic calculator! Enter an expression to get started.\n";
+	cout << "Error checking is currently not utilized so take care when writing expressions!\n";
 	getline(cin, input);
 	cout << input << " is evaluated to: \n";
 
-	cout << contains_at() << "\n";
+	// Parentheses
 
-	contains_at begpar = contains_at::find(input, '(');
-
-	cout << begpar.index << "\n";
-
-	while (begpar.index > 0){
-		cout << begpar << "\n";
-		begpar = contains_at::find(input.substr(begpar.index), '(');
+	while (find(input, '(') > 0){
+		int parbeg = find(input, '('); int parend = find(input, ')');
+		input = input.substr(0, parbeg) + input.substr(parbeg+1, parend-parbeg-1) + input.substr(parend+1, input.length()-parend-1);
+		cout << input << "\n";
 	}
 
 
