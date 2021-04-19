@@ -1,2 +1,2 @@
-sic: simpleinputcalc.cpp
-	g++ simpleinputcalc.cpp -o sic -g
+pemdas: pemdas.cpp
+	g++ pemdas.cpp -o pemdas -g

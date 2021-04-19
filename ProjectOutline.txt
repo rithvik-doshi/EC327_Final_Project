@@ -1,5 +1,0 @@
-Project Outline
-
-by Rithvik Doshi, Johnson Yang, and Muhammed Abdalla
-
-Proposal: Develop an app linked to BU Calendar API

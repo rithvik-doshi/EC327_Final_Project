@@ -10,8 +10,6 @@ using std::cin;
 using std::string;
 using std::ostream;
 
-//Rework this: -1 = false, 0 --> true and index
-
 int find(string str, char c){
 	for (int i = 0; i < str.size(); i++){
 		if (str.at(i) == c) return i;
@@ -19,13 +17,13 @@ int find(string str, char c){
 	return -1;
 }
 
-// string eval(string str){
-
-// }
+string eval(string str){
+	while
+}
 
 int main() {
 	string input;
-	cout << "Welcome to basic calculator! Enter an expression to get started.\n";
+	cout << "Welcome to basic integer calculator! Enter an expression to get started.\n";
 	cout << "Error checking is currently not utilized so take care when writing expressions!\n";
 	getline(cin, input);
 	cout << input << " is evaluated to: \n";
