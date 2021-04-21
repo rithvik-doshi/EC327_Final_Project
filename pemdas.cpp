@@ -17,8 +17,18 @@ int find(string str, char c){
 	return -1;
 }
 
+bool isnumber(string str){
+	bool out = true;
+	for (char i : str){
+		if (!(i >= '0' && i <= '9')) out = false;
+	}
+	return out;
+}
+
 string eval(string str){
-	while
+	while (!isnumber(str)){
+		
+	}
 }
 
 int main() {
@@ -32,7 +42,8 @@ int main() {
 
 	while (find(input, '(') > 0){
 		int parbeg = find(input, '('); int parend = find(input, ')');
-		input = input.substr(0, parbeg) + input.substr(parbeg+1, parend-parbeg-1) + input.substr(parend+1, input.length()-parend-1);
+		string inpar = input.substr(parbeg+1, parend-parbeg-1);
+		input = input.substr(0, parbeg) + inpar + input.substr(parend+1, input.length()-parend-1);
 		cout << input << "\n";
 	}
 
