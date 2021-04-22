@@ -2,15 +2,19 @@
 
 #include <iostream>
 #include <string>
-#define PEMDAS {'+', '-', '*', '/', '(', ')', '^', '\\'};
-#define NUMBER {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+#include <math.h>
+// #define PEMDAS {'+', '-', '*', '/', '(', ')', '^', '\\'};
+// #define NUMBER {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 using std::cout;
 using std::cin;
 using std::string;
 using std::ostream;
+using std::stod;
+using std::to_string;
 
 string paren(string str);
+string exp(string str);
 
 int find(string str, char c){
 	for (int i = 0; i < str.size(); i++){
@@ -37,24 +41,34 @@ bool isnumber(char c){
 string eval(string str){
 	while (!isnumber(str)){
 		str = paren(str);
-
+		str = exp(str);
 	}
+	return str;
 }
 
 string exp(string str){
 	int prevnumstart = 0;
 	int nextnumend = 0;
 	int expindex = 0;
-	for (char i : str){
-		if (!isnumber(i)){
-			if (i == '^'){
-				expindex = find(str, '^');
-				
+	for (int i = 0; i < str.size(); i++){
+		if (!isnumber(str.at(i))){
+			if (str.at(i) == '^'){
+				expindex = i;
+				i++;
+				while (isnumber(str.at(i)) || i < str.size()) i++;
+				nextnumend = --i;
+				break;
 			} else {
-				prevnumstart = find(str, i);
+				prevnumstart = i+1;
 			}
 		}
 	}
+	cout << prevnumstart << expindex << nextnumend << "\n";
+	double base = stod(str.substr(prevnumstart, expindex));
+	cout << base << "\n";
+	double exponent = stod(str.substr(expindex+1, nextnumend));
+	cout << exponent << "\n";
+	return to_string(pow(base, exponent));
 }
 
 string paren(string str){
@@ -72,16 +86,9 @@ int main() {
 	cout << "Welcome to basic integer calculator! Enter an expression to get started.\n";
 	cout << "Error checking is currently not utilized so take care when writing expressions!\n";
 	getline(cin, input);
-	cout << input << " is evaluated to: \n";
+	cout << input << " is evaluated to: " << eval(input) << "\n";
 
-	// Parentheses
-
-	// while (find(input, '(') > 0){
-	// 	int parbeg = find(input, '('); int parend = find(input, ')');
-	// 	string inpar = input.substr(parbeg+1, parend-parbeg-1);
-	// 	input = input.substr(0, parbeg) + inpar + input.substr(parend+1, input.length()-parend-1);
-	// 	cout << input << "\n";
-	// }
+	// put eval here at some point
 
 
 	return 0;
