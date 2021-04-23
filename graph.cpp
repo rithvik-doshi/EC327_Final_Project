@@ -12,13 +12,16 @@ using std::string;
 int main(){
   vector <int> x,y;
   float yscale, xscale, ysetmax = 500, xsetmax = 500;
-  int xpointmax = 100, xpointmin = -100, deviation;
-  int i, ypointmax = 0, ypointmin = 0, count = 0;
-  int originx = xsetmax/2, originy = ysetmax/2;
+  float xpointmin = -500, xpointmax = 500;
+  int i, deviation, ypointmax = 0, ypointmin = 0, count = 0;
+  int originy = ysetmax/2;
+  int xpointmaxgraph = xpointmax, xpointmingraph = xpointmin;
+  float offsetx = ((abs(xpointmin)+0.0)/(abs(xpointmin)+abs(xpointmax)));
+  float originx = offsetx*xsetmax;
 
-  //getting x values
+  //getting x-negative values
   for (i=0;i<=abs(xpointmax)+abs(xpointmin);i++){
-    x.push_back(i-(abs(xpointmax)+abs(xpointmin))/2);
+    x.push_back(i+xpointmin);
   }
   
   //getting y values
@@ -54,14 +57,10 @@ int main(){
   }
 
   //getting x scale
-  if (abs(xpointmin) > abs(xpointmax)){
-    xscale = (xsetmax/xpointmin)/2;
-  } else {
-    xscale = (xsetmax/xpointmax)/2;
-  }
+  xscale = xsetmax/(abs(xpointmax)+abs(xpointmin));
 
   sf::RenderWindow window(sf::VideoMode(xsetmax,ysetmax),"Graph");
-  window.setFramerateLimit(60);
+  window.setFramerateLimit(120);
 
   //creating axis
   sf::RectangleShape xaxis;
@@ -93,15 +92,15 @@ int main(){
   ymintext.setPosition(originx,ysetmax-10);
   window.draw(ymintext);
 
-  string xpointmax_s = to_string(xpointmax);
+  string xpointmax_s = to_string(xpointmaxgraph);
   deviation = xpointmax_s.length()*6;
-  sf::Text xmaxtext(to_string(xpointmax), font);
+  sf::Text xmaxtext(to_string(xpointmaxgraph), font);
   xmaxtext.setCharacterSize(10);
   xmaxtext.setFillColor(sf::Color::White);
   xmaxtext.setPosition(xsetmax-deviation,originy);
   window.draw(xmaxtext);
 
-  sf::Text xmintext(to_string(xpointmin), font);
+  sf::Text xmintext(to_string(xpointmingraph), font);
   xmintext.setCharacterSize(10);
   xmintext.setFillColor(sf::Color::White);
   xmintext.setPosition(0,originy);
@@ -111,6 +110,8 @@ int main(){
   sf::CircleShape coord;
   coord.setRadius(1);
   coord.setOutlineColor(sf::Color::White);
+  coord.setPosition(x.at(0)*xscale,y.at(0)*yscale);
+  cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << '\n';
 
   //running window
   while (window.isOpen()){
@@ -120,9 +121,10 @@ int main(){
     }
     if (count < x.size()-1){
       count++;
+      coord.setPosition((x.at(count)*xscale)+originx,(y.at(count)*yscale)+originy);
+      window.draw(coord);
+      cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << '\n';
     }
-    window.draw(coord);
-    coord.setPosition((x.at(count)*xscale)+originx,(y.at(count)*yscale)+originy-1);
     window.display();
   }
 }
