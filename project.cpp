@@ -11,24 +11,31 @@ using std::ostream;
 using std::string;
 using std::to_string;
 
-ostream& operator<<(ostream& os, Matrix& A) {
-  string viewMatrix;
-  for (int i = 0; i < A.r; i++) {
-    for (int j = 0; j < A.c; j++){
-      viewMatrix += to_string(A.at(i, j)) + '\t';
-    }
-
-    viewMatrix += '\n';
-  }
-  os << viewMatrix;
-  return os;
-}
-
 
 int main(int argc, char** argv){
-  Matrix A(5, 9);
+  Matrix A(9, 9);
 
   cout << A << '\n';
-  Matrix B("2 3 4; 2 3 5");
+
+  Matrix B( { {2, 3, 2}, {4, 3, 2}, {1, 1, 1} } );
+  cout << B << '\n';
+
+  std::vector<double> v1 = {2, 3, 2};
+  std::vector<double> v2 = {2, 3, 2};
+
+  cout << "NORM SQUARED" << (v1 * v2) << '\n';
+
+  std::vector<double> v3 = (B * v2);
+  cout << v3 << '\n';
+
+  A = B * B;
+  cout << A << std::endl;
+
+  Matrix C({{4,2},{6,0}});
+
+  cout << C << std::endl;
+  C.inverse(&C);
+  cout << C << std::endl;
+
   return 0;
 }
