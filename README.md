@@ -1,7 +1,5 @@
 # Line of best fit 
 
-Foobar is a Python library for dealing with word pluralization.
-
 ## Scope
 
 This application will allow you to find the line of best fit according to preference.
