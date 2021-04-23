@@ -12,9 +12,8 @@ using std::string;
 int main(){
   vector <int> x,y;
   float yscale, xscale, ysetmax = 500, xsetmax = 500;
-  float xpointmin = -500, xpointmax = 500;
-  int i, deviation, ypointmax = 0, ypointmin = 0, count = 0;
-  int originy = ysetmax/2;
+  float xpointmin = -10, xpointmax = 10, ypointmax = 0, ypointmin = 0;
+  int i, deviation, count = 0;
   int xpointmaxgraph = xpointmax, xpointmingraph = xpointmin;
   float offsetx = ((abs(xpointmin)+0.0)/(abs(xpointmin)+abs(xpointmax)));
   float originx = offsetx*xsetmax;
@@ -23,10 +22,10 @@ int main(){
   for (i=0;i<=abs(xpointmax)+abs(xpointmin);i++){
     x.push_back(i+xpointmin);
   }
-  
+
   //getting y values
   for (auto e:x){
-    y.push_back(-(pow(e,2)));
+    y.push_back(2*e);
   }
 
   //getting max y
@@ -42,22 +41,26 @@ int main(){
       ypointmin = e;
     }
   }
-
-  //getting y scale
-  if (abs(ypointmin) > abs(ypointmax)){
-    yscale = (ysetmax/ypointmin)/2;
-    ypointmax = abs(ypointmin);
-  } else {
-    yscale = (ysetmax/ypointmax)/2;
-    ypointmin = abs(ypointmax);
+  if (ypointmin == 0){
+    ypointmin = -(ypointmax/10);
+  }
+  if (ypointmax == 0){
+    ypointmax = -(ypointmin/10);
   }
 
-  if (yscale < 0){
-    yscale = yscale * -1;
-  }
+  int ypointmingraph = ypointmin, ypointmaxgraph = ypointmax;
+  float offsety = ((abs(ypointmax)+0.0)/((abs(ypointmin)+abs(ypointmax))));
+  float originy = offsety*ysetmax;
+  cout << offsety << ' ' << originy << '\n';
 
+
+
+  
   //getting x scale
   xscale = xsetmax/(abs(xpointmax)+abs(xpointmin));
+  //getting y scale
+  yscale = ysetmax/(abs(ypointmax)+abs(ypointmin));
+
 
   sf::RenderWindow window(sf::VideoMode(xsetmax,ysetmax),"Graph");
   window.setFramerateLimit(120);
@@ -79,14 +82,16 @@ int main(){
   sf::Font font;
   font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
 
+  cout << originx << ' ' << originy << '\n';
+
   //creating text
-  sf::Text ymaxtext(to_string(ypointmax), font);
+  sf::Text ymaxtext(to_string(ypointmaxgraph), font);
   ymaxtext.setCharacterSize(10);
   ymaxtext.setFillColor(sf::Color::White);
   ymaxtext.setPosition(originx,0);
   window.draw(ymaxtext);
 
-  sf::Text ymintext(to_string(ypointmin), font);
+  sf::Text ymintext(to_string(ypointmingraph), font);
   ymintext.setCharacterSize(10);
   ymintext.setFillColor(sf::Color::White);
   ymintext.setPosition(originx,ysetmax-10);
@@ -108,10 +113,12 @@ int main(){
 
   //creating shape
   sf::CircleShape coord;
-  coord.setRadius(1);
+  coord.setRadius(2);
   coord.setOutlineColor(sf::Color::White);
   coord.setPosition(x.at(0)*xscale,y.at(0)*yscale);
-  cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << '\n';
+
+  cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << ' ';
+  cout << x.at(count) << ' ' << y.at(count) << '\n';
 
   //running window
   while (window.isOpen()){
@@ -121,9 +128,10 @@ int main(){
     }
     if (count < x.size()-1){
       count++;
-      coord.setPosition((x.at(count)*xscale)+originx,(y.at(count)*yscale)+originy);
+      coord.setPosition((x.at(count)*xscale)+originx,-(y.at(count)*yscale)+originy);
       window.draw(coord);
-      cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << '\n';
+      cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << ' ';
+      cout << x.at(count) << ' ' << y.at(count) << '\n';
     }
     window.display();
   }
