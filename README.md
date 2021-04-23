@@ -3,6 +3,7 @@
 
 ## Checklist
 -fix offcenter lines
+
 -import a file which reads the line of best fit equation
 
 ## Changelog
