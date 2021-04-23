@@ -1,7 +1,7 @@
 # READ ME FILE - Rithvik's Branch
 
-###### MODIFICATION 4/7/2021 MUHAMMED ABDALLA
-###### MODIFICATION 4/7/2021 RITHVIK DOSHI
+###### Modified 4/7/2021 MUHAMMED ABDALLA
+###### Modified 4/7/2021 Rithvik Doshi
 
 ###### Modification 4/23/2021 Rithvik Doshi
 
