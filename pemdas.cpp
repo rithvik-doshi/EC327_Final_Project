@@ -3,8 +3,6 @@
 #include <iostream>
 #include <string>
 #include <math.h>
-// #define PEMDAS {'+', '-', '*', '/', '(', ')', '^', '\\'};
-// #define NUMBER {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 using std::cout;
 using std::cin;
@@ -15,6 +13,9 @@ using std::to_string;
 
 string paren(string str);
 string exp(string str);
+string md(string str);
+string as(string str);
+bool isnumber(char c);
 
 int find(string str, char c){
 	for (int i = 0; i < str.size(); i++){
@@ -33,8 +34,8 @@ bool isnumber(string str){
 }
 
 bool isnumber(char c){
-	bool out = true;
-	if (!(c >= '0' && c <= '9')) out = false;
+	bool out = false;
+	if (((c >= '0' && c <= '9') || c == '.')) out = true;
 	return out;
 }
 
@@ -42,6 +43,8 @@ string eval(string str){
 	while (!isnumber(str)){
 		str = paren(str);
 		str = exp(str);
+		str = md(str);
+		str = as(str);
 	}
 	return str;
 }
@@ -50,25 +53,100 @@ string exp(string str){
 	int prevnumstart = 0;
 	int nextnumend = 0;
 	int expindex = 0;
-	for (int i = 0; i < str.size(); i++){
-		if (!isnumber(str.at(i))){
-			if (str.at(i) == '^'){
-				expindex = i;
-				i++;
-				while (isnumber(str.at(i)) || i < str.size()) i++;
-				nextnumend = --i;
-				break;
-			} else {
-				prevnumstart = i+1;
+	while (find(str, '^') > 0){
+		for (int i = 0; i < str.size(); i++){
+			if (!isnumber(str.at(i))){
+				if (str.at(i) == '^'){
+					expindex = i;
+					break;
+				} else {
+					prevnumstart = i+1;
+				}
 			}
 		}
+		nextnumend = expindex;
+		for (int i = expindex+1; i < str.size(); i++){
+			if (!isnumber(str.at(i))) {
+				break;
+			} else {
+				nextnumend = i;
+			}
+		}
+		double base = stod(str.substr(prevnumstart, expindex));
+		double exponent = stod(str.substr(expindex+1, nextnumend));
+		double result = pow(base, exponent);
+		string s = to_string(result);
+		str = str.substr(0, prevnumstart) + s + str.substr(nextnumend+1, str.length()-nextnumend-1);
 	}
-	cout << prevnumstart << expindex << nextnumend << "\n";
-	double base = stod(str.substr(prevnumstart, expindex));
-	cout << base << "\n";
-	double exponent = stod(str.substr(expindex+1, nextnumend));
-	cout << exponent << "\n";
-	return to_string(pow(base, exponent));
+	return str;
+}
+
+string md(string str){
+	int prevnumstart = 0;
+	int nextnumend = 0;
+	int opindex = 0;
+	bool multordiv = true; // True for mult, False for div
+	while (find(str, '*') > 0 || find(str, '/') > 0){
+		for (int i = 0; i < str.size(); i++){
+			if (!isnumber(str.at(i))){
+				if (str.at(i) == '*' || str.at(i) == '/'){
+					opindex = i;
+					multordiv = (str.at(i) == '*')?true:false;
+					break;
+				} else {
+					prevnumstart = i+1;
+				}
+			}
+		}
+		nextnumend = opindex;
+		for (int i = opindex+1; i < str.size(); i++){
+			if (!isnumber(str.at(i))) {
+				break;
+			} else {
+				nextnumend = i;
+			}
+		}
+		double first = stod(str.substr(prevnumstart, opindex));
+		double second = stod(str.substr(opindex+1, nextnumend));
+		double result = (multordiv)?first*second:first/second;
+		string s = to_string(result);
+		str = str.substr(0, prevnumstart) + s + str.substr(nextnumend+1, str.length()-nextnumend-1);
+	}
+	return str;
+}
+
+string as(string str){
+	int prevnumstart = 0;
+	int nextnumend = 0;
+	int opindex = 0;
+	bool addorsub = true; // True for add, False for sub
+	while (find(str, '+') > 0 || find(str, '-') > 0){
+		for (int i = 0; i < str.size(); i++){
+			if (!isnumber(str.at(i))){
+				if (str.at(i) == '+' || str.at(i) == '-'){
+					opindex = i;
+					addorsub = (str.at(i) == '+')?true:false;
+					break;
+				} else {
+					prevnumstart = i+1;
+				}
+			}
+		}
+		nextnumend = opindex;
+		for (int i = opindex+1; i < str.size(); i++){
+			if (!isnumber(str.at(i))) {
+				break;
+			} else {
+				nextnumend = i;
+			}
+		}
+		double first = stod(str.substr(prevnumstart, opindex));
+		double second = stod(str.substr(opindex+1, nextnumend));
+		double result = (addorsub)?first+second:first-second;
+		string s = to_string(result);
+		str = str.substr(0, prevnumstart) + s + str.substr(nextnumend+1, str.length()-nextnumend-1);
+	}
+	return str;
 }
 
 string paren(string str){
@@ -76,7 +154,6 @@ string paren(string str){
 		int parbeg = find(str, '('); int parend = find(str, ')');
 		string inpar = eval(str.substr(parbeg+1, parend-parbeg-1));
 		str = str.substr(0, parbeg) + inpar + str.substr(parend+1, str.length()-parend-1);
-		cout << str << "\n";
 	}
 	return str;
 }
@@ -87,9 +164,5 @@ int main() {
 	cout << "Error checking is currently not utilized so take care when writing expressions!\n";
 	getline(cin, input);
 	cout << input << " is evaluated to: " << eval(input) << "\n";
-
-	// put eval here at some point
-
-
 	return 0;
 }
