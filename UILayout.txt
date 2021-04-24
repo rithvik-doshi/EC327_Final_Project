@@ -1,0 +1,13 @@
+Main Page
+--> PEMDAS Calculator
+	--> Open up window with input/output
+--> Graph Mode
+	--> Open up graph mode
+	--> Input boxes for graph
+	--> Return graph in new window/file in specified directory
+--> Matrix Mode
+	--> Matrix Mult
+		--> Window with input/output
+	--> Line of Best Fit
+		--> Get points to be sent to graph modes
+--> About Page
