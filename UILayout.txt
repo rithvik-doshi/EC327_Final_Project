@@ -1,13 +1,17 @@
 Main Page
---> PEMDAS Calculator
+--> PEMDAS Calculator -- Rithvik
 	--> Open up window with input/output
 --> Graph Mode
-	--> Open up graph mode
+	--> Open up graph mode -- Johnson
 	--> Input boxes for graph
 	--> Return graph in new window/file in specified directory
---> Matrix Mode
+
+
+--> Matrix Mode -- TO BE COMPLETED LATER
 	--> Matrix Mult
 		--> Window with input/output
 	--> Line of Best Fit
 		--> Get points to be sent to graph modes
+
+
 --> About Page
