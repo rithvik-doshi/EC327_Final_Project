@@ -159,11 +159,11 @@ string paren(string str){
 	return str;
 }
 
-int main() {
-	string input;
-	cout << "Welcome to basic integer calculator! Enter an expression to get started.\n";
-	cout << "Error checking is currently not utilized so take care when writing expressions!\n";
-	getline(cin, input);
-	cout << input << " is evaluated to: " << eval(input) << "\n";
-	return 0;
-}
+// int main() {
+// 	string input;
+// 	cout << "Welcome to basic integer calculator! Enter an expression to get started.\n";
+// 	cout << "Error checking is currently not utilized so take care when writing expressions!\n";
+// 	getline(cin, input);
+// 	cout << input << " is evaluated to: " << eval(input) << "\n";
+// 	return 0;
+// }

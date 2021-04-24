@@ -1,0 +1,59 @@
+LECTURE MARCH 24TH
+2:26, Enum events SFML
+--pollEvent captures events. Boolean, param std::event
+
+8:00 Image, Textures, Sprite
+--load image from file
+--make texture from image object
+--Sprite is the dynamic image, just like karel
+
+12:00 Keybind and Events
+
+~15:00 Inheritance
+--can use struct objects
+--can use class objects
+--self reference in an object use "this"
+
+36:00 Const
+--Color combine(const Color&) const 
+  will not modify object
+  will not modify the referenced value
+
+44:00 Examine GDB
+-- x/5dw &result
+  #sections, decimal, word
+
+49:00 Inheritance pt.2
+--derived and base class
+  a cat is an animal
+  not all animals are cats
+--base class: animal
+--derived class: cat
+--Class is same as struct Except members are private instead of public
+  struct base{ -- stuff in base class -- }
+  struct Derived : (private/public/protected) Base { -- contains base--  }
+  class AnotherBase {public:}
+  class moreDerivated : (private/public/protected) AnotherBase{}
+
+1:13:00 Operators
+-- Color + Color, Color : Color
+  use Color::operator+ (Color LHS, Color RHS){-- do something --}
+  use Color::operator: (Color LHS, Color RHS){-- do something --}
+1:18:00
+-- cout << result << '\n'
+  ostream& operator<<( ostream LHS, Color& RHS ) reference to original stream
+-- cout << = operator<<(Type) and that it has Type: int, long, string, etc.
+
+LECTURE MARCH 29
+1:04 Access
+--public protected private
+  private doesnt allow derived classes to access
+  protected is in between public and private
+
+LECTURE APRIL 5
+11:00 File IO
+--namespace standard ifstream
+  input file stream
+  
+
+  
