@@ -7,7 +7,7 @@ using std::cout;
 
 int main(){
 
-	cout << eval("1+1") << "\n";
+	cout << eval("44*44/44") << "\n";
 	
 
 	
