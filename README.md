@@ -15,4 +15,6 @@
 
 4/23/2021: Created adjustable y-axis 
 
+4/24/2021: Began on the UI
 
+4/25/2021: Completed the UI
