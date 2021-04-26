@@ -43,14 +43,14 @@ Linear_Fit::Linear_Fit(std::vector<double> t, std::vector<double> b) {
     A.set(i,1,1);
   }
 
-  std::cout << "MATRIX A:\n" << A << std::endl;
+  //std::cout << "MATRIX A:\n" << A << std::endl;
   Matrix A_T = A.transpose();
-  std::cout << "MATRIX A':\n" << A_T << std::endl;
+  //std::cout << "MATRIX A':\n" << A_T << std::endl;
   Matrix A_TA_I = (A_T * A).inverse();
-  std::cout << "Det A'A: " << (A_T * A).det() << std::endl; 
-  std::cout << "inv(A'A):\n" << A_TA_I << std::endl;
+  //std::cout << "Det A'A: " << (A_T * A).det() << std::endl; 
+  //std::cout << "inv(A'A):\n" << A_TA_I << std::endl;
   std::vector<double> A_Tb = A_T * b;
-  std::cout << "A_Tb: \n" << A_Tb << std::endl;
+  //std::cout << "A_Tb: \n" << A_Tb << std::endl;
   this -> x = A_TA_I * A_Tb;
   std::cout << "LEAST SQUARES LINEAR\n" << x << "y = " << x.at(0) << "t + " << x.at(1) << std::endl;
 }
@@ -66,18 +66,18 @@ Exponential_Fit::Exponential_Fit(std::vector<double> t, std::vector<double> b) {
     b.at(i) = log(b.at(i));
   }
 
-  std::cout << "MATRIX A:\n" << A << std::endl;
+  //std::cout << "MATRIX A:\n" << A << std::endl;
   Matrix A_T = A.transpose();
-  std::cout << "MATRIX A':\n" << A_T << std::endl;
+  //std::cout << "MATRIX A':\n" << A_T << std::endl;
   Matrix A_TA_I = (A_T * A).inverse();
-  std::cout << "Det A'A: " << (A_T * A).det() << std::endl; 
-  std::cout << "inv(A'A):\n" << A_TA_I << std::endl;
+  //std::cout << "Det A'A: " << (A_T * A).det() << std::endl; 
+  //std::cout << "inv(A'A):\n" << A_TA_I << std::endl;
   std::vector<double> A_Tb = A_T * b;
-  std::cout << "A_Tb: \n" << A_Tb << std::endl;
+  //std::cout << "A_Tb: \n" << A_Tb << std::endl;
   this -> x = A_TA_I * A_Tb;
 
-  N = exp(x.at(0));
-  k = x.at(1);
+  N = exp(x.at(1));
+  k = x.at(0);
 
   std::cout << "LEAST SQUARES EXPONENTIAL\n" << x 
     << "y = " << N << "e^" << k << "t" << std::endl;

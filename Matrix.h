@@ -4,11 +4,11 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 using std::string;
 using std::to_string;
 
 typedef std::vector< std::vector<double> > matrix;
-
 
 class Matrix {
   protected:
