@@ -76,8 +76,8 @@ Exponential_Fit::Exponential_Fit(std::vector<double> t, std::vector<double> b) {
   std::cout << "A_Tb: \n" << A_Tb << std::endl;
   this -> x = A_TA_I * A_Tb;
 
-  N = exp(x.at(1));
-  k = x.at(0);
+  N = exp(x.at(0));
+  k = x.at(1);
 
   std::cout << "LEAST SQUARES EXPONENTIAL\n" << x 
     << "y = " << N << "e^" << k << "t" << std::endl;
