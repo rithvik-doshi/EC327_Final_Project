@@ -12,11 +12,19 @@ using std::string;
 using std::fstream;
 using std::getline;
 
-void plot(float xpointmin, float xpointmax) {
+bool fileExist(string filename) {
+  if (FILE *file = fopen(filename.c_str(), "r")) {
+    fclose(file);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void plot(float xpointmin, float xpointmax, string filename) {
 
   //values that are interchangable
   float ysetmax = 500, xsetmax = 500;
-  string filename = "Data.txt";
   float ypointmin, ypointmax;
 
   //reading a file
@@ -228,84 +236,126 @@ int main() {
   font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
   bool mintextinputallow = false;
   bool maxtextinputallow = false;
+  bool filetextinputallow = false;
+  bool queryFilled = true;
 
-  //creating text output
+  string terminaltext = " ";
+  sf::Text terminal(terminaltext, font);
+  terminal.setCharacterSize(20);
+  terminal.setStyle(sf::Text::Bold);
+  terminal.setFillColor(sf::Color::Red);
+  terminal.setPosition(250 - terminaltext.size() * 5, 310);
+
+  //creating text display
   sf::Text userTextxpointmin(" ", font);
-  string userInputxpointmin;
+  string userInputxpointmin = "-10";
   userTextxpointmin.setCharacterSize(20);
-  userTextxpointmin.setFillColor(sf::Color::White);
-  userTextxpointmin.setPosition(135, 100);
+  userTextxpointmin.setFillColor(sf::Color::Black);
+  userTextxpointmin.setPosition(135, 70);
 
   sf::Text userTextxpointmax(" ", font);
-  string userInputxpointmax;
+  string userInputxpointmax = "10";
   userTextxpointmax.setCharacterSize(20);
-  userTextxpointmax.setFillColor(sf::Color::White);
-  userTextxpointmax.setPosition(135, 180);
+  userTextxpointmax.setFillColor(sf::Color::Black);
+  userTextxpointmax.setPosition(140, 150);
 
-  //Xpointmin text
+  sf::Text userTextfile(" ", font);
+  string userInputfile = "data.csv";
+  userTextfile.setCharacterSize(20);
+  userTextfile.setFillColor(sf::Color::Black);
+  userTextfile.setPosition(125, 230);
+
+  //Text
   sf::Text xpointmintext("X-PointMin:", font);
   xpointmintext.setCharacterSize(20);
-  xpointmintext.setFillColor(sf::Color::White);
-  xpointmintext.setPosition(20, 100);
+  xpointmintext.setFillColor(sf::Color::Black);
+  xpointmintext.setPosition(20, 70);
 
-  //Xpointmax text
-  sf::Text xpointmaxtext("X-PointMax:",font);
+  sf::Text xpointmaxtext("X-PointMax:", font);
   xpointmaxtext.setCharacterSize(20);
-  xpointmaxtext.setFillColor(sf::Color::White);
-  xpointmaxtext.setPosition(15,180);
+  xpointmaxtext.setFillColor(sf::Color::Black);
+  xpointmaxtext.setPosition(20, 150);
+
+  sf::Text filetext("File Name:", font);
+  filetext.setCharacterSize(20);
+  filetext.setFillColor(sf::Color::Black);
+  filetext.setPosition(20, 230);
 
   //submit buttom
   sf::RectangleShape button;
   button.setSize(sf::Vector2f(100, 40));
   button.setFillColor(sf::Color::Transparent);
-  button.setOutlineColor(sf::Color::White);
+  button.setOutlineColor(sf::Color::Black);
   button.setOutlineThickness(1);
   button.setPosition(200, 400);
   sf::Text submit("Submit", font);
   submit.setCharacterSize(20);
-  submit.setFillColor(sf::Color::White);
+  submit.setFillColor(sf::Color::Black);
   submit.setStyle(sf::Text::Bold);
   submit.setPosition(214, 408);
 
-  //
+  //lines
   sf::RectangleShape xpointminline;
-  xpointminline.setSize(sf::Vector2f(300,1));
+  xpointminline.setSize(sf::Vector2f(300, 1));
   xpointminline.setFillColor(sf::Color::Transparent);
-  xpointminline.setPosition(135,121);
+  xpointminline.setPosition(135, 91);
 
   sf::RectangleShape xpointmaxline;
-  xpointmaxline.setSize(sf::Vector2f(300,1));
+  xpointmaxline.setSize(sf::Vector2f(300, 1));
   xpointmaxline.setFillColor(sf::Color::Transparent);
-  xpointmaxline.setPosition(135,201);
+  xpointmaxline.setPosition(140, 171);
+
+  sf::RectangleShape filenameline;
+  filenameline.setSize(sf::Vector2f(300, 1));
+  filenameline.setFillColor(sf::Color::Transparent);
+  filenameline.setPosition(125, 251);
 
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::MouseButtonPressed) {
-        if (event.mouseButton.x > 200 && event.mouseButton.x < 300) {
-          if (event.mouseButton.y < 440 && event.mouseButton.y > 400) 
-            plot(stof(userInputxpointmin),stof(userInputxpointmax));
+        if ((event.mouseButton.x > 200 && event.mouseButton.x < 300) && queryFilled) {
+          if (event.mouseButton.y < 440 && event.mouseButton.y > 400) {
+            if (fileExist(userInputfile)) {
+              if (stof(userInputxpointmin) < stof(userInputxpointmax)) {
+                plot(stof(userInputxpointmin), stof(userInputxpointmax), userInputfile);
+                terminaltext = " ";
+              } else {
+                terminaltext = "X-min should be smaller than X-max";
+              }
+            }
+          }
         }
-        if (event.mouseButton.y > 100 && event.mouseButton.y < 120){
+        if (event.mouseButton.y > 70 && event.mouseButton.y < 90) {
           mintextinputallow = true;
         } else {
           mintextinputallow = false;
         }
-        if (event.mouseButton.y > 180 && event.mouseButton.y < 200){
+        if (event.mouseButton.y > 150 && event.mouseButton.y < 170) {
           maxtextinputallow = true;
         } else {
           maxtextinputallow = false;
         }
+        if (event.mouseButton.y > 230 && event.mouseButton.y < 250) {
+          filetextinputallow = true;
+        } else {
+          filetextinputallow = false;
+        }
       }
-      if (mintextinputallow){
-        xpointminline.setFillColor(sf::Color::White);
+      if (mintextinputallow) {
+        xpointminline.setFillColor(sf::Color::Black);
       } else {
         xpointminline.setFillColor(sf::Color::Transparent);
       }
-      if (maxtextinputallow){
-        xpointmaxline.setFillColor(sf::Color::White);
+      if (maxtextinputallow) {
+        xpointmaxline.setFillColor(sf::Color::Black);
       } else {
         xpointmaxline.setFillColor(sf::Color::Transparent);
+      }
+      if (filetextinputallow) {
+        filenameline.setFillColor(sf::Color::Black);
+      } else {
+        filenameline.setFillColor(sf::Color::Transparent);
       }
       if (event.type == sf::Event::Closed) window.close();
       if (event.type == sf::Event::TextEntered && mintextinputallow) {
@@ -316,6 +366,13 @@ int main() {
             userInputxpointmin += (char)event.text.unicode;
           }
         }
+        if (userInputxpointmin.length() == 0) {
+          queryFilled = false;
+          terminaltext = "Query should not be empty";
+        } else {
+          terminaltext = " ";
+          queryFilled = true;
+        }
       }
       if (event.type == sf::Event::TextEntered && maxtextinputallow) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
@@ -325,18 +382,51 @@ int main() {
             userInputxpointmax += (char)event.text.unicode;
           }
         }
+        if (userInputxpointmax.length() == 0) {
+          queryFilled = false;
+          terminaltext = "Query should not be empty";
+        } else {
+          terminaltext = " ";
+          queryFilled = true;
+        }
+      }
+      if (event.type == sf::Event::TextEntered && filetextinputallow) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+          if (userInputfile.length() > 0) userInputfile.pop_back();
+        } else {
+          if (event.text.unicode < 128) {
+            userInputfile += (char)event.text.unicode;
+          }
+        }
+        if (userInputfile.length() == 0) {
+          queryFilled = false;
+          terminaltext = "Query should not be empty";
+        } else {
+          terminaltext = " ";
+          queryFilled = true;
+        }
       }
     }
-    window.clear();
+    if (fileExist(userInputfile) == false) {
+      terminaltext = "File does not exist";
+    }
+    terminal.setPosition(250 - terminaltext.size() * 5, 310);
+    terminal.setString(terminaltext);
     userTextxpointmin.setString(userInputxpointmin);
     userTextxpointmax.setString(userInputxpointmax);
+    userTextfile.setString(userInputfile);
+    window.clear(sf::Color::White);
+    window.draw(terminal);
     window.draw(xpointmintext);
     window.draw(xpointmaxtext);
     window.draw(submit);
+    window.draw(userTextfile);
+    window.draw(filetext);
     window.draw(userTextxpointmin);
     window.draw(userTextxpointmax);
     window.draw(xpointminline);
     window.draw(xpointmaxline);
+    window.draw(filenameline);
     window.draw(button);
     window.display();
   }
