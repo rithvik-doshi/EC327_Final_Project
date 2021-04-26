@@ -21,7 +21,7 @@ int main(){
 	sf::RectangleShape Matrix(sf::Vector2f(200, 100));
 	sf::RectangleShape Back(sf::Vector2f(200, 100));
 	sf::Font font;
-	font.loadFromFile("/System/Library/Fonts/Optima.ttc");
+	font.loadFromFile("Optima.ttc");
 	sf::Text title;
 	title.setString("Calculator App 1.0-beta1.1");
 	title.setCharacterSize(69);
