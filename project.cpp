@@ -32,12 +32,48 @@ int main(int argc, char** argv) {
   std::vector<double> b;
 
   for (string s : rawData) {
-    t.push_back( stod(s.substr(0, s.find(","))) );
     b.push_back( stod(s.substr(s.find(",") + 1)) );
-
+    t.push_back( b.size() - 1 );
   }
+
+  // DEMONSTRATIONS
+
+  std::vector<double> v1 = {1, 2, 0};
+  std::vector<double> v2 = {1, 0, 1};
+  std::vector<double> v3 = {0, 2, 1};
+  std::vector<double> v4 = {1, 2, 1};
+
+  Matrix A({v1, v4});
+
+  cout << v1 << std::endl;
+  cout << A << std::endl;
+
+
+  cout << "NORM SQUARED: " << (v1 * v1) << std::endl;
+  std::vector<double> vTemp = (A * v1);
+  cout << "\nA * v1:\n" << vTemp << std::endl;
+
+  cout << "A:\n" << A << std::endl;
+
+  Matrix A_T = A.transpose();
+  cout << "A':\n" << A_T << std::endl;
+  
+  Matrix A_TA = (A * A_T);
+  cout << "AA':\n" << A_TA << std::endl;
+
+  double det = A_TA.det();
+  cout << "\ndet(AA'): " << det << std::endl;
+
+  Matrix A_TA_i = A_TA.inverse();
+  cout << "\ninv(AA'):\n" << A_TA_i << std::endl;
+
+
 
   Linear_Fit LbF(t, b);
   Exponential_Fit EbF(t, b);
+
+  std::cout << "\nLEAST SQUARES LINEAR:\ny = " << LbF.x.at(0) << "t + " << LbF.x.at(1) << std::endl;
+  
+  std::cout << "\nLEAST SQUARES EXPONENTIAL:\ny = " << EbF.N << "e^" << EbF.k << "t" << std::endl;
   return 0;
 }
