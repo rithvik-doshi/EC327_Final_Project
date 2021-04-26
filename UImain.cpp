@@ -7,6 +7,7 @@
 #include <cmath>
 #include <string>
 #include <fstream>
+#include "Best_Fit.h"
 using std::cout;
 using std::vector;
 using std::pow;
@@ -40,17 +41,22 @@ float makeAbsolute(float num){
   }
 }
 
-void plot(float xpointmin, float xpointmax, string filename){
+void plot(float xpointmin, float xpointmax, string filename, string lobftype){
+
+  std::transform(lobftype.begin(), lobftype.end(), lobftype.begin(),
+    [](unsigned char c){ return tolower(c); });
+
   //reading a file
   fstream myfile;
   vector <string> filereader;
   string s;
-  
   //values that are not interchangable
+  vector <double> lineOfFit;
   float ysetmax = 500, xsetmax = 500;
   float ypointmin, ypointmax;
-  vector <int> x,y;
+  vector <float> x,y;
   vector <float> originalX, originalY;
+  vector <double> originalXdouble, originalYdouble;
   float yscale, xscale, originalYmax, originalYmin;
   int i,j, placeholder, deviation, count = 0, count2=0;
   int xpointmaxgraph = xpointmax, xpointmingraph = xpointmin;
@@ -69,24 +75,40 @@ void plot(float xpointmin, float xpointmax, string filename){
           s.push_back(e.at(j));
         }
         originalX.push_back(stoi(s));
+        originalXdouble.push_back(stod(s));
         s.clear();
         for (j=i+1;j<e.length();j++){
           s.push_back(e.at(j));
         }
         originalY.push_back(stof(s));
+        originalYdouble.push_back(stod(s));
       }
     }
   }
-
   //getting x-negative values
+
   for (i=0;i<=makeAbsolute(xpointmax)+makeAbsolute(xpointmin);i++){
     x.push_back(i+xpointmin);
   }
 
   //getting y values
-
-  for (auto e:x){
-    y.push_back(9*(pow(e,2)));
+  if (lobftype == "linear"){
+    Linear_Fit LbF(originalXdouble,originalYdouble);
+    for (auto e:x){
+    y.push_back(LbF.x.at(0)*e+LbF.x.at(1));
+  }
+  }
+  if (lobftype == "exponential"){
+    Exponential_Fit EbF(originalXdouble,originalYdouble);
+    float e = 2.71828;
+    for (auto t:x){
+      y.push_back((pow(e,EbF.k*t))*EbF.N);
+    }
+  }
+  if (lobftype == "none"){
+    for (auto e:x){
+      y.push_back(originalY.at(0));
+    }
   }
 
 
@@ -98,9 +120,9 @@ void plot(float xpointmin, float xpointmax, string filename){
     }
   }
   originalYmax = originalY.at(0);
-  for (i=0;i<y.size();i++){
-    if (originalY.at(i)>originalYmax){
-      originalYmax = originalY.at(i);
+  for (auto e:originalY){
+    if (e>originalYmax){
+      originalYmax = e;
     }
   }
   if (originalYmax > ypointmax){
@@ -122,14 +144,14 @@ void plot(float xpointmin, float xpointmax, string filename){
     }
   }
 
-  cout << ypointmax << ' ' << makeAbsolute(ypointmax) << ' ' << makeAbsolute(ypointmin)/10 << '\n';
+  //cout << ypointmax << ' ' << makeAbsolute(ypointmax) << ' ' << makeAbsolute(ypointmin)/10 << '\n';
   if (makeAbsolute(ypointmin) < makeAbsolute(ypointmax)/10){
     ypointmin = -(ypointmax/10);
   }
   if (makeAbsolute(ypointmax) < makeAbsolute(ypointmin)/10){
     ypointmax = -(ypointmin/10);
   }
-  cout << ypointmax << '\n';
+  //cout << ypointmax << '\n';
 
   float offsety = ((makeAbsolute(ypointmax)+0.0)/((makeAbsolute(ypointmin)+makeAbsolute(ypointmax))));
   float originy = offsety*ysetmax;
@@ -202,6 +224,9 @@ void plot(float xpointmin, float xpointmax, string filename){
   coord.setFillColor(sf::Color::White);
   coord.setPosition(x.at(count)*xscale+originx-2,-(y.at(count)*yscale+originy-2));
   window.draw(coord);
+  if (lobftype == "none"){
+    coord.setFillColor(sf::Color::Transparent);
+  }
 
   sf::CircleShape ogCoord;
   ogCoord.setRadius(2);
@@ -296,6 +321,7 @@ int main() {
   bool mintextinputallow = false;
   bool maxtextinputallow = false;
   bool filetextinputallow = false;
+  bool choiceinputallow = false;
   bool queryFilled = true;
 
   string terminaltext = " ";
@@ -303,7 +329,7 @@ int main() {
   terminal.setCharacterSize(20);
   terminal.setStyle(sf::Text::Bold);
   terminal.setFillColor(sf::Color::Red);
-  terminal.setPosition(250 - terminaltext.size() * 5, 410);
+  terminal.setPosition(250 - terminaltext.size() * 5, 490);
 
   //creating text display
   sf::Text userTextxpointmin(" ", font);
@@ -322,7 +348,13 @@ int main() {
   string userInputfile = "data.csv";
   userTextfile.setCharacterSize(20);
   userTextfile.setFillColor(sf::Color::Black);
-  userTextfile.setPosition(125, 330);
+  userTextfile.setPosition(130, 330);
+
+  sf::Text userTextchoice(" ", font);
+  string userInputchoice = "none";
+  userTextchoice.setCharacterSize(20);
+  userTextchoice.setFillColor(sf::Color::Black);
+  userTextchoice.setPosition(225, 410); //COME BACK HERE
 
   //Text
   sf::Text xpointmintext("X-PointMin:", font);
@@ -340,18 +372,23 @@ int main() {
   filetext.setFillColor(sf::Color::Black);
   filetext.setPosition(20, 330);
 
+  sf::Text choicetext("Line of Best Fit Type:", font);
+  choicetext.setCharacterSize(20);
+  choicetext.setFillColor(sf::Color::Black);
+  choicetext.setPosition(20, 410); //COME BACK HERE
+
   //submit buttom
   sf::RectangleShape button;
   button.setSize(sf::Vector2f(100, 40));
   button.setFillColor(sf::Color::Transparent);
   button.setOutlineColor(sf::Color::Black);
   button.setOutlineThickness(1);
-  button.setPosition(200, 500);
+  button.setPosition(200, 580);
   sf::Text submit("Submit", font);
   submit.setCharacterSize(20);
   submit.setFillColor(sf::Color::Black);
   submit.setStyle(sf::Text::Bold);
-  submit.setPosition(214, 508);
+  submit.setPosition(214, 588);
 
   //lines
   sf::RectangleShape xpointminline;
@@ -367,7 +404,12 @@ int main() {
   sf::RectangleShape filenameline;
   filenameline.setSize(sf::Vector2f(300, 1));
   filenameline.setFillColor(sf::Color::Transparent);
-  filenameline.setPosition(125, 351);
+  filenameline.setPosition(130, 351);
+
+  sf::RectangleShape choiceline;
+  choiceline.setSize(sf::Vector2f(300, 1));
+  choiceline.setFillColor(sf::Color::Transparent);
+  choiceline.setPosition(225, 431); //COME BACK HERE
 
 
   int mode = 0; // 0 = Menu, 1 = Pemdas, 2 = Graph, 3 = Calculator
@@ -410,10 +452,10 @@ int main() {
       if (mode == 2){
         if (event.type == sf::Event::MouseButtonPressed) {
         if ((event.mouseButton.x > 200 && event.mouseButton.x < 300) && queryFilled) {
-          if (event.mouseButton.y < 540 && event.mouseButton.y > 500) {
+          if (event.mouseButton.y < 620 && event.mouseButton.y > 580) {
             if (fileExist(userInputfile)) {
               if (stof(userInputxpointmin) < stof(userInputxpointmax)) {
-                plot(stof(userInputxpointmin), stof(userInputxpointmax), userInputfile);
+                plot(stof(userInputxpointmin), stof(userInputxpointmax), userInputfile, userInputchoice);
                 terminaltext = " ";
               } else {
                 terminaltext = "X-min should be smaller than X-max";
@@ -436,6 +478,11 @@ int main() {
         } else {
           filetextinputallow = false;
         }
+        if (event.mouseButton.y > 410 && event.mouseButton.y < 430) {
+          choiceinputallow = true;
+        } else {
+          choiceinputallow = false;
+        }
       }
       if (mintextinputallow) {
         xpointminline.setFillColor(sf::Color::Black);
@@ -451,6 +498,11 @@ int main() {
         filenameline.setFillColor(sf::Color::Black);
       } else {
         filenameline.setFillColor(sf::Color::Transparent);
+      }
+      if (choiceinputallow) {
+        choiceline.setFillColor(sf::Color::Black);
+      } else {
+        choiceline.setFillColor(sf::Color::Transparent);
       }
       if (event.type == sf::Event::TextEntered && mintextinputallow) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
@@ -508,10 +560,37 @@ int main() {
           queryFilled = true;
         }
       }
+      if (event.type == sf::Event::TextEntered && choiceinputallow) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+          if (userInputchoice.length() > 0) userInputchoice.pop_back();
+        } else {
+          if (event.text.unicode < 128) {
+            userInputchoice += (char)event.text.unicode;
+          }
+        }
+        if (userInputchoice.length() == 0) {
+          queryFilled = false;
+          terminaltext = "Query should not be empty";
+        } else {
+          terminaltext = " ";
+          queryFilled = true;
+        }
+      }
+      std::transform(userInputchoice.begin(), userInputchoice.end(), userInputchoice.begin(),
+        [](unsigned char c){ return tolower(c); });
+      if (userInputchoice != "linear"){
+        if (userInputchoice != "exponential"){
+          if (userInputchoice != "none"){
+            terminaltext = "LoBF must be linear, exponential, or none";
+            queryFilled = false;
+          }
+        }
+      }
     }
     if (fileExist(userInputfile) == false) {
       terminaltext = "File does not exist";
       }
+
       if (event.type == sf::Event::Closed) App.close();
 
       if (mode == 0 && event.type == sf::Event::MouseButtonPressed) {
@@ -654,12 +733,16 @@ int main() {
         App.draw(line);
       }
       if (mode == 2) {
-        terminal.setPosition(250 - terminaltext.size() * 5, 410);
+        terminal.setPosition(250 - terminaltext.size() * 5, 490);
         terminal.setString(terminaltext);
         userTextxpointmin.setString(userInputxpointmin);
         userTextxpointmax.setString(userInputxpointmax);
+        userTextchoice.setString(userInputchoice);
         userTextfile.setString(userInputfile);
         App.clear(sf::Color::White);
+        App.draw(choiceline);
+        App.draw(choicetext);
+        App.draw(userTextchoice);
         App.draw(Back);
         App.draw(backtext);
         App.draw(terminal);
