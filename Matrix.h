@@ -1,5 +1,6 @@
 // Copyright 2021 Rithvik Doshi rithvik@bu.edu
 // Copyright 2021 Muhammed Abdalla muhabda@bu.edu
+// Copyright 2021 Johnson Yang johnsony@bu.edu
 
 #include <vector>
 #include <string>
@@ -8,8 +9,9 @@ using std::to_string;
 
 typedef std::vector< std::vector<double> > matrix;
 
+
 class Matrix {
-  private:
+  protected:
     matrix A;
   public:
     int r, c;
@@ -20,10 +22,11 @@ class Matrix {
     double at(int, int);
     void set(int, int, double);
     // MATRIX FUNCTIONS
-    void transpose(Matrix*);
+    Matrix transpose();
     // ONLY SQUARE MATRICES
-    void inverse(Matrix*);
-    double det(Matrix);
+    Matrix inverse();
+    double det();
+    double cofactor(double);
 
 };
 
@@ -93,10 +96,10 @@ double operator*(std::vector<double> vec1, std::vector<double> vec2) {
 // MATRIX MULTIPLICATION VECTOR
 std::vector<double> operator*(Matrix& M, std::vector<double>& vec) {
   std::vector<double> b;
-  if (M.row(0).size() != vec.size())
+  if (M.c != vec.size())
     std::cerr << "Dimension Mismatch\n";
-   for (int i = 0; i < vec.size(); i++)
-     b.push_back(M.row(i) * vec);
+ for (int i = 0; i < M.r; i++)
+   b.push_back(M.row(i) * vec);
   return b;
 }
 
@@ -152,22 +155,106 @@ void Matrix::set(int r, int c, double val) {
   A.at(r).at(c) = val;
 }
 
+// Complexity (n-1)^2
+Matrix cofactorExpansion(Matrix A, int row, int col) {
+  Matrix B(A.r-1, A.c-1);
+  int B_row, B_col;
+  B_row = B_col = 0;
+  for (int i = 0; i < A.r; i++) {
 
-double findDeterminant(Matrix A) {
+    if (i == row)
+      continue;
+    B_col = 0;
+    for (int j = 0; j < A.c; j++) {
+
+      if (j == col)
+        continue;
+      B.set(B_row, B_col, A.at(i,j));
+      B_col++;
+    }
+
+    B_row++;
+  }
+  return B;
+}
+
+// Complexity (!n)^2
+double Matrix::cofactor(double mult) {
+  std::vector<int> multipliers;
+  int rowSign, colSign, multSign;
+  double coFactor,tempDet,detSum;
+  coFactor = rowSign = colSign = multSign = 1;
+  tempDet = detSum = 0;
+
+  for (int i = 0; i < this -> r; i++) {
+    colSign = 1;
+    for (int j = 0; j < this -> c; j++) { // when its a 3x3 it will make 2x2 Co-M's
+      multSign = rowSign * colSign;
+
+      coFactor = multSign * (this -> at(i,j));
+      multipliers.push_back(coFactor);
+      
+
+      Matrix C = cofactorExpansion(this -> A, i, j);
+      /*
+      std::cout << "\nCOFACTOR A" << multipliers.size() 
+        << "\ncofactor: " << multipliers.at(multipliers.size()-1) << std::endl 
+        << C << std::endl;
+      */
+      if (C.r > 2) {
+        tempDet = C.cofactor(coFactor);
+        detSum += tempDet; // sums all the nxn's from their 2x2 sums
+        std::cout << "Cofactor: " << mult << std::endl;
+        std::cout << C.r << "x" << C.r << "[ DET CO-M A" << multipliers.size() << "]: ";
+        std::cout << tempDet << std::endl;
+        std::cout << "\n---------------------------------------\n";
+      } else if (C.r == 2) {
+        tempDet = C.det() * coFactor;
+        std::cout << C.det() << std::endl;
+        detSum += tempDet; // sums all the 2x2 dets for 3x3
+        std::cout << "Cofactor: " << coFactor << "\t";
+        std::cout << "2x2 DET CO-M A" << multipliers.size() << ": ";
+        std::cout << tempDet << std::endl;
+      }
+      colSign *= -1;
+    }
+    rowSign *= -1;
+  }
+  std::cout << "Determinant sum: " << detSum << std::endl;
+  return detSum;
+}
+
+double Matrix::det() {
   double det = 0;
-  if (A.r != A.c)
+  if (this -> r != this -> c)
     std::cerr << "Matrix not square";
-  if (A.r == 2)
-    det = (A.at(0,0) * A.at(1,1)) - (A.at(1,0) * A.at(0,1));
+  if (this -> r != this -> c)
+    std::cerr << "Matrix not 2x2";
+  if (this -> r == 2)
+    det = ( (this -> at(0,0)) * (this -> at(1,1)) ) - 
+          ( (this -> at(1,0)) * (this -> at(0,1)) );
   return det;
 }
 
 
-void Matrix::inverse(Matrix* m) {
-  // Rule: get down to 2x2 then find adjecent matrix and multiply by det of the 2x2
-  // [a b; c d] -> (ad - bc)^-1 * [d -c; -b a]
-  Matrix newMatrix({ {(*m).at(1,1), -(*m).at(1,0)}, {-(*m).at(0,1), (*m).at(0,0)} });
-  *m = findDeterminant(*m) * newMatrix;
+Matrix Matrix::inverse() {
+  Matrix newMatrix({
+          {   this -> at(1,1), -(this -> at(1,0))},
+          { -(this -> at(0,1)),  this -> at(0,0)}
+  });
+
+  return (1/(this -> det())) * newMatrix;
 }
 
+Matrix Matrix::transpose() {
+  // Cols A become Rows of A
+  Matrix newMatrix(this -> c, this -> r);
 
+  for (int i = 0; i < this -> c; i++) {
+    for (int j = 0; j < this -> r; j++) {
+      newMatrix.set(i,j,this -> at(j,i));
+    }
+  }
+
+  return newMatrix;
+}
