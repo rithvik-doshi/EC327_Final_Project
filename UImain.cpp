@@ -85,8 +85,6 @@ void plot(float xpointmin, float xpointmax, string filename, string lobftype){
       }
     }
   }
-  //getting x-negative values
-
   for (i=0;i<=makeAbsolute(xpointmax)+makeAbsolute(xpointmin);i++){
     x.push_back(i+xpointmin);
   }
@@ -412,6 +410,60 @@ int main() {
   choiceline.setPosition(225, 431); //COME BACK HERE
 
 
+  //matrix calculation
+  bool allowMatrixA;
+  bool allowOperator;
+  bool allowMatrixB;
+  //matrixA
+  sf::Text matrixAInput(" ", font);
+  string matrixA = "{1,2,3},{4,5,6},{7,8,9}";
+  matrixAInput.setCharacterSize(30);
+  matrixAInput.setFillColor(sf::Color::Black);
+  matrixAInput.setPosition(150, 170);
+
+  sf::RectangleShape matrixALine;
+  matrixALine.setSize(sf::Vector2f(matrixA.length()*14, 1));
+  matrixALine.setFillColor(sf::Color::Black);
+  matrixALine.setPosition(150, 204);
+
+  sf::Text matrixAText("Matrix A: ", font);
+  matrixAText.setCharacterSize(30);
+  matrixAText.setFillColor(sf::Color::Black);
+  matrixAText.setPosition(20, 170);
+
+  //operator
+  sf::Text operationInput(" ", font);
+  string operation = "multiplication, transpose";
+  operationInput.setCharacterSize(30);
+  operationInput.setFillColor(sf::Color::Black);
+  operationInput.setPosition(160, 260);
+
+  sf::RectangleShape operatorLine;
+  operatorLine.setSize(sf::Vector2f(operation.length()*14, 1));
+  operatorLine.setFillColor(sf::Color::Black);
+  operatorLine.setPosition(160, 294);
+
+  sf::Text operationText("Operator: ", font);
+  operationText.setCharacterSize(30);
+  operationText.setFillColor(sf::Color::Black);
+  operationText.setPosition(20, 260);
+
+  //matrix B
+  sf::Text matrixBInput(" ", font);
+  string matrixB = "{1,2,3},{4,5,6},{7,8,9}";
+  matrixBInput.setCharacterSize(30);
+  matrixBInput.setFillColor(sf::Color::Black);
+  matrixBInput.setPosition(150, 350);
+
+  sf::RectangleShape matrixBLine;
+  matrixBLine.setSize(sf::Vector2f(matrixB.length()*14, 1));
+  matrixBLine.setFillColor(sf::Color::Black);
+  matrixBLine.setPosition(150, 384);
+
+  sf::Text matrixBText("Matrix B: ", font);
+  matrixBText.setCharacterSize(30);
+  matrixBText.setFillColor(sf::Color::Black);
+  matrixBText.setPosition(20, 350);
   int mode = 0; // 0 = Menu, 1 = Pemdas, 2 = Graph, 3 = Calculator
 
   cout << "Current Directory: Main Menu\n";
@@ -611,7 +663,7 @@ int main() {
         }
         if (inRange(mloc, event.mouseButton)) {
           cout << "Matrix\n";
-          // mode = 3;
+          mode = 3;
         }
       }
 
@@ -647,6 +699,90 @@ int main() {
         }
 
       }
+      if (mode == 3){
+        if (event.type == sf::Event::TextEntered) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+          if (matrixA.length() > 0) matrixA.pop_back();
+        } else {
+          if (event.text.unicode < 128) {
+            matrixA += (char)event.text.unicode;
+          }
+        }
+        if (matrixA.length() == 0) {
+          queryFilled = false;
+          terminaltext = "Query should not be empty";
+        } else {
+          terminaltext = " ";
+          queryFilled = true;
+        }
+      }
+      if (event.type == sf::Event::TextEntered) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+          if(operation.length() > 0) operation.pop_back();
+        } else {
+          if (event.text.unicode < 128) {
+            operation += (char)event.text.unicode;
+          }
+        }
+        if (operation.length() == 0) {
+          queryFilled = false;
+          terminaltext = "Query should not be empty";
+        } else {
+          terminaltext = " ";
+          queryFilled = true;
+        }
+      }
+      if (event.type == sf::Event::TextEntered) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+          if (matrixB.length() > 0) matrixB.pop_back();
+        } else {
+          if (event.text.unicode < 128) {
+            matrixB += (char)event.text.unicode;
+          }
+        }
+        if (matrixB.length() == 0) {
+          queryFilled = false;
+          terminaltext = "Query should not be empty";
+        } else {
+          terminaltext = " ";
+          queryFilled = true;
+        }
+      }
+      if (event.type == sf::Event::MouseButtonPressed) {
+        /*if ((event.mouseButton.x > 200 && event.mouseButton.x < 300) && queryFilled) {
+          if (event.mouseButton.y < 620 && event.mouseButton.y > 580) {
+            if (fileExist(userInputfile)) {
+              if (stof(userInputxpointmin) < stof(userInputxpointmax)) {
+                plot(stof(userInputxpointmin), stof(userInputxpointmax), userInputfile, userInputchoice);
+                terminaltext = " ";
+              } else {
+                terminaltext = "X-min should be smaller than X-max";
+              }
+            }
+          }
+        }*/
+        if (event.mouseButton.y > 170 && event.mouseButton.y < 200) {
+          allowMatrixB = true;
+        } else {
+          allowMatrixB = false;
+        }
+        if (event.mouseButton.y > 250 && event.mouseButton.y < 270) {
+          maxtextinputallow = true;
+        } else {
+          maxtextinputallow = false;
+        }
+        if (event.mouseButton.y > 330 && event.mouseButton.y < 350) {
+          filetextinputallow = true;
+        } else {
+          filetextinputallow = false;
+        }
+        if (event.mouseButton.y > 410 && event.mouseButton.y < 430) {
+          choiceinputallow = true;
+        } else {
+          choiceinputallow = false;
+        }
+      }
+    }
 
       if (mode != 0 && event.type == sf::Event::MouseButtonPressed) {
         auto bloc = Back.getPosition();
@@ -661,7 +797,7 @@ int main() {
           if (userInput.length() > 0) {
             userInput.pop_back();
             userInputDisplay.setString(userInput);
-            cout << userInput << "\n";
+            //cout << userInput << "\n";
             enterHere.setFillColor(sf::Color::Transparent);
           } else {
             enterHere.setFillColor(sf::Color::Black);
@@ -672,10 +808,9 @@ int main() {
           char in = (char)event.text.unicode;
           // cout << in << "\n";
           if (event.text.unicode < 128 && !sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) userInput.push_back(in);
-          cout << userInput << "\n";
+          //cout << userInput << "\n";
           userInputDisplay.setString(userInput);
         }
-
         if (userInput.length() > 0) {
           enterHere.setFillColor(sf::Color::Transparent);
         } else {
@@ -757,6 +892,25 @@ int main() {
         App.draw(xpointmaxline);
         App.draw(filenameline);
         App.draw(button);
+      }
+      if (mode == 3){
+        matrixAInput.setString(matrixA);
+        matrixBInput.setString(matrixB);
+        matrixALine.setSize(sf::Vector2f(matrixA.length()*16, 1));
+        matrixBLine.setSize(sf::Vector2f(matrixB.length()*16,1));
+        operatorLine.setSize(sf::Vector2f(operation.length()*15, 1));
+        operationInput.setString(operation);
+        App.draw(Back);
+        App.draw(backtext);
+        App.draw(matrixAText);
+        App.draw(matrixAInput);
+        App.draw(matrixALine);
+        App.draw(matrixBText);
+        App.draw(matrixBInput);
+        App.draw(matrixBLine);
+        App.draw(operationInput);
+        App.draw(operationText);
+        App.draw(operatorLine);
       }
       App.display();
     }
