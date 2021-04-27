@@ -700,7 +700,7 @@ int main() {
 
       }
       if (mode == 3){
-        if (event.type == sf::Event::TextEntered) {
+        if ((event.type == sf::Event::TextEntered) && allowMatrixA){
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
           if (matrixA.length() > 0) matrixA.pop_back();
         } else {
@@ -716,7 +716,7 @@ int main() {
           queryFilled = true;
         }
       }
-      if (event.type == sf::Event::TextEntered) {
+      if ((event.type == sf::Event::TextEntered) && allowOperator){
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
           if(operation.length() > 0) operation.pop_back();
         } else {
@@ -732,7 +732,7 @@ int main() {
           queryFilled = true;
         }
       }
-      if (event.type == sf::Event::TextEntered) {
+      if ((event.type == sf::Event::TextEntered) && allowMatrixB) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
           if (matrixB.length() > 0) matrixB.pop_back();
         } else {
@@ -751,36 +751,26 @@ int main() {
       if (event.type == sf::Event::MouseButtonPressed) {
         /*if ((event.mouseButton.x > 200 && event.mouseButton.x < 300) && queryFilled) {
           if (event.mouseButton.y < 620 && event.mouseButton.y > 580) {
-            if (fileExist(userInputfile)) {
-              if (stof(userInputxpointmin) < stof(userInputxpointmax)) {
-                plot(stof(userInputxpointmin), stof(userInputxpointmax), userInputfile, userInputchoice);
-                terminaltext = " ";
-              } else {
-                terminaltext = "X-min should be smaller than X-max";
-              }
-            }
+            
+            
           }
         }*/
         if (event.mouseButton.y > 170 && event.mouseButton.y < 200) {
+          allowMatrixA = true;
+        } else {
+          allowMatrixA = false;
+        }
+        if (event.mouseButton.y > 260 && event.mouseButton.y < 290) {
+          allowOperator = true;
+        } else {
+          allowOperator = false;
+        }
+        if (event.mouseButton.y > 350 && event.mouseButton.y < 380) {
           allowMatrixB = true;
         } else {
           allowMatrixB = false;
         }
-        if (event.mouseButton.y > 250 && event.mouseButton.y < 270) {
-          maxtextinputallow = true;
-        } else {
-          maxtextinputallow = false;
-        }
-        if (event.mouseButton.y > 330 && event.mouseButton.y < 350) {
-          filetextinputallow = true;
-        } else {
-          filetextinputallow = false;
-        }
-        if (event.mouseButton.y > 410 && event.mouseButton.y < 430) {
-          choiceinputallow = true;
-        } else {
-          choiceinputallow = false;
-        }
+        
       }
     }
 
@@ -900,6 +890,10 @@ int main() {
         matrixBLine.setSize(sf::Vector2f(matrixB.length()*16,1));
         operatorLine.setSize(sf::Vector2f(operation.length()*15, 1));
         operationInput.setString(operation);
+        terminal.setString(terminaltext);
+        terminal.setCharacterSize(30);
+        terminal.setPosition(250 - terminaltext.size() * 6,470);
+        App.draw(terminal);
         App.draw(Back);
         App.draw(backtext);
         App.draw(matrixAText);
