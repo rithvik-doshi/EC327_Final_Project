@@ -17,7 +17,7 @@ are costly, and what we're trying to do is bring the main essense of data analys
 
 ## How To Run
 
-1. Make sure your current directory includes the dependencies "pemdas.cpp", "Best_Fit.h", "Matrix.h", & "Makefile" and this specific font file is downloaded and in this directory:
+1. Make sure your current directory includes the main file "UImain.cpp", dependencies "pemdas.cpp", "Best_Fit.h", "Matrix.h", & "Makefile" and this specific font file is downloaded and in this directory:
 	/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf
 2. In a terminal window, run the command:
 ```
