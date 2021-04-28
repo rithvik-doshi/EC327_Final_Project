@@ -1,10 +1,13 @@
-# Line of best fit 
+# Calculator App
 
 ## Scope
 
-This application will allow you to find the line of best fit according to preference.
-The application will only read from Comma Seperated Value (CSV) files and the user will select their
-independent and dependent axis
+This application will allow you to perform several mathematical operations that applications such as MATLAB allow you to do, minus a subscription and coding
+experience. The app is split into three compnents:
+
+1. Pemdas: Allows you to evaluate simple calculations involving the operands '+', '-', '*', '/', '^', and '()'.
+2. Graph: Allows you to plot points from an input file and find the line of best fit according to preference.
+3. Matrix: Allows you to conduct various matrix operations between two matrices of your choosing.
 
 ## Usage
 
@@ -29,6 +32,7 @@ make uimain
 ## Known Bugs
 -- Inverse Matrices for 3x3 matrices and above
 -- Co-factoring for 3x3 matrices and above 
+-- No error-checking for invalid statements in pemdas.cpp, such as "*+28-3", statements involving negative answers such as '9-19', and dividing by zero.
 
 ## Changelogs
 -- 4/22/21 BETA 0.1 basic Matrix functions and 2x2 inverses
