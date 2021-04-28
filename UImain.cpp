@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include "Best_Fit.h"
+#include <algorithm>
 using std::cout;
 using std::vector;
 using std::pow;
@@ -15,6 +16,55 @@ using std::to_string;
 using std::string;
 using std::fstream;
 using std::getline;
+using std::stod;
+
+string matrixprint(Matrix A){
+  string viewMatrix;
+  for (int i = 0; i < A.r; i++){
+    for (int j = 0; j < A.c; j++)
+      viewMatrix += to_string(A.at(i, j)) + ' ';
+    viewMatrix += '\n';
+  }
+  return viewMatrix;
+}
+
+Matrix stom(string s){
+  int count = 0, i, j;
+  vector <string> v_stringph, v_string;
+  vector <double> v;
+  string placeholder;
+
+  for (i=0;i<s.length();i++){
+    if (s.at(i)!= '/'){
+      placeholder.push_back(s.at(i));
+    } else {
+      if (s.at(i) == '/'){
+        v_stringph.push_back(placeholder);
+        count++;
+        placeholder.clear();
+      }
+    }
+  }
+  v_stringph.push_back(placeholder);
+  placeholder.clear();
+
+  for (auto e:v_stringph){
+    for(i=0; i<e.length(); i++) if(e.at(i) == ' ') 
+      e.erase(i,1);
+    for(i=0;i<e.length();i++) if (e.at(i)==',')
+      e.erase(i,1);
+      v_string.push_back(e);
+  }
+  Matrix A(count+1,v_string.at(0).size());
+
+  for (i=0;i<v_string.size();i++){
+    for (j=0;j<v_string.at(i).size();j++){
+      placeholder = v_string.at(i).at(j);
+      A.set(i,j,stod(placeholder));
+    }
+  }
+  return A;
+}
 
 bool inRange(const sf::Vector2f& loc, sf::Event::MouseButtonEvent mouse) {
   return ((mouse.x - (loc.x + 200)) * (mouse.x - (loc.x)) <= 0 && (mouse.y - (loc.y + 100)) * (mouse.y - (loc.y)) <= 0);
@@ -43,8 +93,6 @@ float makeAbsolute(float num){
 
 void plot(float xpointmin, float xpointmax, string filename, string lobftype){
 
-  std::transform(lobftype.begin(), lobftype.end(), lobftype.begin(),
-    [](unsigned char c){ return tolower(c); });
 
   //reading a file
   fstream myfile;
@@ -263,10 +311,10 @@ void plot(float xpointmin, float xpointmax, string filename, string lobftype){
 }
 
 int main() {
-  sf::RenderWindow App(sf::VideoMode(1080, 900, 24), "Calculator App");
+  sf::RenderWindow App(sf::VideoMode(1200, 900, 24), "Calculator App");
   sf::RectangleShape Pemdas(sf::Vector2f(200, 100));
   sf::RectangleShape Graph(sf::Vector2f(200, 100));
-  sf::RectangleShape Matrix(sf::Vector2f(200, 100));
+  sf::RectangleShape Matrixs(sf::Vector2f(200, 100));
   sf::RectangleShape Back(sf::Vector2f(200, 100));
   sf::Font font;
   font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
@@ -298,8 +346,8 @@ int main() {
   Pemdas.setFillColor(sf::Color(0, 205, 100));
   Graph.setPosition(420, 660);
   Graph.setFillColor(sf::Color(205, 100, 0));
-  Matrix.setPosition(780, 660);
-  Matrix.setFillColor(sf::Color(0, 100, 205));
+  Matrixs.setPosition(780, 660);
+  Matrixs.setFillColor(sf::Color(0, 100, 205));
   Back.setPosition(50, 50);
   Back.setFillColor(sf::Color::Black);
   sf::Text backtext;
@@ -416,54 +464,88 @@ int main() {
   bool allowMatrixB;
   //matrixA
   sf::Text matrixAInput(" ", font);
-  string matrixA = "{1,2,3},{4,5,6},{7,8,9}";
+  string matrixA = "1,2,3/4,5,6/7,8,9";
   matrixAInput.setCharacterSize(30);
   matrixAInput.setFillColor(sf::Color::Black);
-  matrixAInput.setPosition(150, 170);
+  matrixAInput.setPosition(150, 200);
 
   sf::RectangleShape matrixALine;
-  matrixALine.setSize(sf::Vector2f(matrixA.length()*14, 1));
+  matrixALine.setSize(sf::Vector2f(300, 1));
   matrixALine.setFillColor(sf::Color::Black);
-  matrixALine.setPosition(150, 204);
+  matrixALine.setPosition(150, 234);
 
   sf::Text matrixAText("Matrix A: ", font);
   matrixAText.setCharacterSize(30);
   matrixAText.setFillColor(sf::Color::Black);
-  matrixAText.setPosition(20, 170);
+  matrixAText.setPosition(20, 200);
 
   //operator
   sf::Text operationInput(" ", font);
-  string operation = "multiplication, transpose";
+  string operation = "m";
   operationInput.setCharacterSize(30);
   operationInput.setFillColor(sf::Color::Black);
-  operationInput.setPosition(160, 260);
+  operationInput.setPosition(160, 290);
 
   sf::RectangleShape operatorLine;
-  operatorLine.setSize(sf::Vector2f(operation.length()*14, 1));
+  operatorLine.setSize(sf::Vector2f(300, 1));
   operatorLine.setFillColor(sf::Color::Black);
-  operatorLine.setPosition(160, 294);
+  operatorLine.setPosition(160, 324);
 
   sf::Text operationText("Operator: ", font);
   operationText.setCharacterSize(30);
   operationText.setFillColor(sf::Color::Black);
-  operationText.setPosition(20, 260);
+  operationText.setPosition(20, 290);
 
   //matrix B
   sf::Text matrixBInput(" ", font);
-  string matrixB = "{1,2,3},{4,5,6},{7,8,9}";
+  string matrixB = "1,2,3/4,5,6/7,8,9";
   matrixBInput.setCharacterSize(30);
   matrixBInput.setFillColor(sf::Color::Black);
-  matrixBInput.setPosition(150, 350);
+  matrixBInput.setPosition(150, 380);
 
   sf::RectangleShape matrixBLine;
-  matrixBLine.setSize(sf::Vector2f(matrixB.length()*14, 1));
+  matrixBLine.setSize(sf::Vector2f(300, 1));
   matrixBLine.setFillColor(sf::Color::Black);
-  matrixBLine.setPosition(150, 384);
+  matrixBLine.setPosition(150, 414);
 
   sf::Text matrixBText("Matrix B: ", font);
   matrixBText.setCharacterSize(30);
   matrixBText.setFillColor(sf::Color::Black);
-  matrixBText.setPosition(20, 350);
+  matrixBText.setPosition(20, 380);
+
+  //calculate
+  sf::RectangleShape CalcButton;
+  CalcButton.setSize(sf::Vector2f(175, 60));
+  CalcButton.setFillColor(sf::Color::Transparent);
+  CalcButton.setOutlineColor(sf::Color::Black);
+  CalcButton.setOutlineThickness(1);
+  CalcButton.setPosition(180, 700);
+  sf::Text Calculate("Calculate", font);
+  Calculate.setCharacterSize(30);
+  Calculate.setFillColor(sf::Color::Black);
+  Calculate.setStyle(sf::Text::Bold);
+  Calculate.setPosition(194, 708);
+
+  //divisor
+  sf::RectangleShape divisor;
+  divisor.setSize(sf::Vector2f(2,500));
+  divisor.setFillColor(sf::Color::Black);
+  divisor.setPosition(600,200);
+
+  //answer
+  sf::Text ans("Answer",font);
+  ans.setCharacterSize(40);
+  ans.setFillColor(sf::Color::Black);
+  ans.setPosition(820,200);
+  ans.setStyle(sf::Text::Bold);
+  ans.setStyle(sf::Text::Underlined);
+
+  sf::Text matrixResult(" ",font);
+  string matrixRes;
+  matrixResult.setCharacterSize(30);
+  matrixResult.setFillColor(sf::Color::Black);
+  matrixResult.setPosition(620,300);
+
   int mode = 0; // 0 = Menu, 1 = Pemdas, 2 = Graph, 3 = Calculator
 
   cout << "Current Directory: Main Menu\n";
@@ -495,6 +577,46 @@ int main() {
   answertxt.setCharacterSize(30);
   answertxt.setFillColor(sf::Color::Black);
   answertxt.setPosition(350, 800);
+
+  sf::RectangleShape About(sf::Vector2f(200,100));
+  About.setPosition(420, 500);
+  About.setFillColor(sf::Color(40, 40, 40));
+  sf::Text abouttext;
+  abouttext.setString("About");
+  abouttext.setCharacterSize(30);
+  abouttext.setFillColor(sf::Color::White);
+  abouttext.setPosition(460, 530);
+  abouttext.setFont(font);
+
+  sf::Text aboutTitle;
+  aboutTitle.setString("About");
+  aboutTitle.setCharacterSize(69);
+  aboutTitle.setFillColor(sf::Color(0, 0, 0));
+  aboutTitle.setPosition(440, 40);
+  aboutTitle.setFont(font);
+
+  sf::Text abtpg;
+  string msg = "Copyright 2021 Rithvik Doshi, Muhammed Abdalla and Johnson Yang\n";
+  msg+="Welcome to our multi-purpose calculator application! Here's some information you may need to\n";
+  msg+="know to get the most out of it.\n\n";
+  msg+="Pemdas mode: Allows you to conduct simple calculations. Enter a string of numbers and operands\n";
+  msg+="that you wish to evaluate and marvel at how it returns the correct answer every time!\n";
+  msg+="Note that this beta version is sensitive to formatting and tricky problems such as negative answers\n";
+  msg+="and dividing by zero, so make sure before you press enter that none of these errors can show up.\n";
+  msg+="Use the operands '+', '-', '*', '/', '^', and '()' to indicate operations.\n\n";
+  msg+="Graph mode: Allows you to plot data points and, if desired, take curve fits of the data.\n";
+  msg+="In graph mode, fill out each of the 4 text boxes by the names of xpointmin, xpointmax,\n";
+  msg+="file name, line of best fit type and hit submit when completed.\n\n";
+  msg+="Matrix mode: Allows you to conduct operations between two matrices. Enter the values of the\n";
+  msg+="matrices you wish to calculate rowwise (eg. '1,0/0,1' for an identity matrix) and\n";
+  msg+="enter the type of operation you wish to conduct (multiplication, transpose, inverse).\n";
+  msg+="In the matrix operations box, enter m for multiplcation, t for transpose, and i for inverse.\n\n";
+  msg+="Coming soon: Predict the future via machine learning algorithm and fingernail biometrics!";
+  abtpg.setString(msg);
+  abtpg.setCharacterSize(24);
+  abtpg.setFillColor(sf::Color::Black);
+  abtpg.setPosition(40, 200);
+  abtpg.setFont(font);
 
   while (App.isOpen()) {
     App.clear(sf::Color::White);
@@ -628,8 +750,7 @@ int main() {
           queryFilled = true;
         }
       }
-      std::transform(userInputchoice.begin(), userInputchoice.end(), userInputchoice.begin(),
-        [](unsigned char c){ return tolower(c); });
+      
       if (userInputchoice != "linear"){
         if (userInputchoice != "exponential"){
           if (userInputchoice != "none"){
@@ -642,13 +763,13 @@ int main() {
     if (fileExist(userInputfile) == false) {
       terminaltext = "File does not exist";
       }
-
       if (event.type == sf::Event::Closed) App.close();
 
       if (mode == 0 && event.type == sf::Event::MouseButtonPressed) {
         auto ploc = Pemdas.getPosition();
         auto gloc = Graph.getPosition();
-        auto mloc = Matrix.getPosition();
+        auto mloc = Matrixs.getPosition();
+        auto abloc = About.getPosition();
         if (inRange(ploc, event.mouseButton)) {
           cout << "Pemdas\n";
           mode = 1;
@@ -665,12 +786,17 @@ int main() {
           cout << "Matrix\n";
           mode = 3;
         }
+        if (inRange(abloc, event.mouseButton)) {
+          cout << "About\n";
+          mode = 4;
+        }
       }
 
       if (mode == 0 && event.type == sf::Event::MouseMoved) {
         auto ploc = Pemdas.getPosition();
         auto gloc = Graph.getPosition();
-        auto mloc = Matrix.getPosition();
+        auto mloc = Matrixs.getPosition();
+        auto abloc = About.getPosition();
         sf::Cursor hand;
         hand.loadFromSystem(sf::Cursor::Hand);
         sf::Cursor arrow;
@@ -693,11 +819,15 @@ int main() {
           Graph.setFillColor(sf::Color(205, 100, 0));
         }
         if (inRange(mloc, event.mouseMove)) {
-          Matrix.setFillColor(sf::Color((0 + 255) % 256, (100 + 255) % 256, (205 + 255) % 256));
+          Matrixs.setFillColor(sf::Color((0 + 255) % 256, (100 + 255) % 256, (205 + 255) % 256));
         } else if (!inRange(mloc, event.mouseMove)) {
-          Matrix.setFillColor(sf::Color(0, 100, 205));
+          Matrixs.setFillColor(sf::Color(0, 100, 205));
         }
-
+        if (inRange(abloc, event.mouseMove)) {
+          About.setFillColor(sf::Color(80, 80, 80));
+        } else if (!inRange(mloc, event.mouseMove)) {
+          About.setFillColor(sf::Color(40, 40, 40));
+        }
       }
       if (mode == 3){
         if ((event.type == sf::Event::TextEntered) && allowMatrixA){
@@ -710,7 +840,7 @@ int main() {
         }
         if (matrixA.length() == 0) {
           queryFilled = false;
-          terminaltext = "Query should not be empty";
+          terminaltext = "Matrix A must be filled";
         } else {
           terminaltext = " ";
           queryFilled = true;
@@ -726,7 +856,7 @@ int main() {
         }
         if (operation.length() == 0) {
           queryFilled = false;
-          terminaltext = "Query should not be empty";
+          terminaltext = "operator field cannot be left empty";
         } else {
           terminaltext = " ";
           queryFilled = true;
@@ -740,32 +870,47 @@ int main() {
             matrixB += (char)event.text.unicode;
           }
         }
-        if (matrixB.length() == 0) {
-          queryFilled = false;
-          terminaltext = "Query should not be empty";
-        } else {
-          terminaltext = " ";
-          queryFilled = true;
-        }
       }
       if (event.type == sf::Event::MouseButtonPressed) {
-        /*if ((event.mouseButton.x > 200 && event.mouseButton.x < 300) && queryFilled) {
-          if (event.mouseButton.y < 620 && event.mouseButton.y > 580) {
-            
-            
-          }
-        }*/
-        if (event.mouseButton.y > 170 && event.mouseButton.y < 200) {
+        if ((event.mouseButton.x > 180 && event.mouseButton.x < 355) && queryFilled) {
+          if (event.mouseButton.y < 760 && event.mouseButton.y > 700) {
+            Matrix A = stom(matrixA);
+            Matrix B = stom(matrixB);
+            if (operation == "m"){
+              Matrix AB = A*B;
+              matrixRes = matrixprint(AB);
+              terminaltext = " ";
+            } else if(operation == "t"){
+              if (matrixB.length()!=0){
+                terminaltext = "B must be left empty";
+              } else {
+                Matrix A_t = A.transpose();
+                matrixRes = matrixprint(A_t);
+              }
+            } else if(operation == "i"){
+              if (matrixB.length()!=0){
+                terminaltext = "B must be left empty";
+              } else {
+                Matrix A_i = A.inverse();
+                matrixRes = matrixprint(A_i);
+                terminaltext = " ";
+              }
+            } else {
+              terminaltext = "please enter m,t, or i";
+            }
+        }
+      }
+        if (event.mouseButton.y > 200 && event.mouseButton.y < 230) {
           allowMatrixA = true;
         } else {
           allowMatrixA = false;
         }
-        if (event.mouseButton.y > 260 && event.mouseButton.y < 290) {
+        if (event.mouseButton.y > 290 && event.mouseButton.y < 320) {
           allowOperator = true;
         } else {
           allowOperator = false;
         }
-        if (event.mouseButton.y > 350 && event.mouseButton.y < 380) {
+        if (event.mouseButton.y > 380 && event.mouseButton.y < 410) {
           allowMatrixB = true;
         } else {
           allowMatrixB = false;
@@ -842,11 +987,13 @@ int main() {
       if (mode == 0) {
         App.draw(Pemdas);
         App.draw(Graph);
-        App.draw(Matrix);
+        App.draw(Matrixs);
         App.draw(title);
         App.draw(pdtext);
         App.draw(gftext);
         App.draw(mxtext);
+        App.draw(About);
+        App.draw(abouttext);
       }
       if (mode == 1) {
         App.draw(Back);
@@ -884,15 +1031,13 @@ int main() {
         App.draw(button);
       }
       if (mode == 3){
+        matrixResult.setString(matrixRes);
         matrixAInput.setString(matrixA);
         matrixBInput.setString(matrixB);
-        matrixALine.setSize(sf::Vector2f(matrixA.length()*16, 1));
-        matrixBLine.setSize(sf::Vector2f(matrixB.length()*16,1));
-        operatorLine.setSize(sf::Vector2f(operation.length()*15, 1));
         operationInput.setString(operation);
         terminal.setString(terminaltext);
         terminal.setCharacterSize(30);
-        terminal.setPosition(250 - terminaltext.size() * 6,470);
+        terminal.setPosition(250 - terminaltext.size() * 6,500);
         App.draw(terminal);
         App.draw(Back);
         App.draw(backtext);
@@ -905,6 +1050,17 @@ int main() {
         App.draw(operationInput);
         App.draw(operationText);
         App.draw(operatorLine);
+        App.draw(CalcButton);
+        App.draw(Calculate);
+        App.draw(divisor);
+        App.draw(ans);
+        App.draw(matrixResult);
+      }
+      if (mode == 4){
+        App.draw(aboutTitle);
+        App.draw(Back);
+        App.draw(backtext);
+        App.draw(abtpg);
       }
       App.display();
     }
