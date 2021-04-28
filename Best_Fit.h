@@ -52,10 +52,18 @@ Linear_Fit::Linear_Fit(std::vector<double> t, std::vector<double> b) {
   std::vector<double> A_Tb = A_T * b;
   //std::cout << "A_Tb: \n" << A_Tb << std::endl;
   this -> x = A_TA_I * A_Tb;
+<<<<<<< HEAD
 }
  
 Exponential_Fit::Exponential_Fit(std::vector<double> t, std::vector<double> b) {
   std::vector<std::vector<double>> data;
+=======
+  std::cout << "LEAST SQUARES LINEAR\n" << x << "y = " << x.at(0) << "t + " << x.at(1) << std::endl;
+}
+ 
+Exponential_Fit::Exponential_Fit(std::vector<double> t, std::vector<double> b) {
+  std::vector<std::vector<double> > data;
+>>>>>>> a319735eb1693889a977a13ed326b58c4be4796e
 
   Matrix A(t.size(),2);
 
@@ -75,7 +83,15 @@ Exponential_Fit::Exponential_Fit(std::vector<double> t, std::vector<double> b) {
   //std::cout << "A_Tb: \n" << A_Tb << std::endl;
   this -> x = A_TA_I * A_Tb;
 
+<<<<<<< HEAD
   this -> N = exp(x.at(1));
   this -> k = x.at(0);
+=======
+  N = exp(x.at(1));
+  k = x.at(0);
+
+  std::cout << "LEAST SQUARES EXPONENTIAL\n" << x 
+    << "y = " << N << "e^" << k << "t" << std::endl;
+>>>>>>> a319735eb1693889a977a13ed326b58c4be4796e
 }
  
