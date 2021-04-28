@@ -52,7 +52,6 @@ Linear_Fit::Linear_Fit(std::vector<double> t, std::vector<double> b) {
   std::vector<double> A_Tb = A_T * b;
   //std::cout << "A_Tb: \n" << A_Tb << std::endl;
   this -> x = A_TA_I * A_Tb;
-  std::cout << "LEAST SQUARES LINEAR\n" << x << "y = " << x.at(0) << "t + " << x.at(1) << std::endl;
 }
  
 Exponential_Fit::Exponential_Fit(std::vector<double> t, std::vector<double> b) {
@@ -76,10 +75,7 @@ Exponential_Fit::Exponential_Fit(std::vector<double> t, std::vector<double> b) {
   //std::cout << "A_Tb: \n" << A_Tb << std::endl;
   this -> x = A_TA_I * A_Tb;
 
-  N = exp(x.at(1));
-  k = x.at(0);
-
-  std::cout << "LEAST SQUARES EXPONENTIAL\n" << x 
-    << "y = " << N << "e^" << k << "t" << std::endl;
+  this -> N = exp(x.at(1));
+  this -> k = x.at(0);
 }
  

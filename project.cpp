@@ -45,25 +45,30 @@ int main(int argc, char** argv) {
 
   Matrix A({v1, v4});
 
-  cout << v1 << std::endl;
-  cout << A << std::endl;
-
+  cout << "v1:\n" << v1 << std::endl;
+  char c;
+  std::cin >> c;
 
   cout << "NORM SQUARED: " << (v1 * v1) << std::endl;
   std::vector<double> vTemp = (A * v1);
   cout << "\nA * v1:\n" << vTemp << std::endl;
 
+std::cin >> c;
   cout << "A:\n" << A << std::endl;
 
+std::cin >> c;
   Matrix A_T = A.transpose();
   cout << "A':\n" << A_T << std::endl;
-  
+
+std::cin >> c; 
   Matrix A_TA = (A * A_T);
   cout << "AA':\n" << A_TA << std::endl;
 
+std::cin >> c;
   double det = A_TA.det();
   cout << "\ndet(AA'): " << det << std::endl;
 
+std::cin >> c;
   Matrix A_TA_i = A_TA.inverse();
   cout << "\ninv(AA'):\n" << A_TA_i << std::endl;
 
@@ -72,8 +77,12 @@ int main(int argc, char** argv) {
   Linear_Fit LbF(t, b);
   Exponential_Fit EbF(t, b);
 
+std::cin >> c;
+  cout << "b:\n" << b << std::endl;
+std::cin >> c;
   std::cout << "\nLEAST SQUARES LINEAR:\ny = " << LbF.x.at(0) << "t + " << LbF.x.at(1) << std::endl;
-  
+
+std::cin >> c;  
   std::cout << "\nLEAST SQUARES EXPONENTIAL:\ny = " << EbF.N << "e^" << EbF.k << "t" << std::endl;
   return 0;
 }

@@ -2,9 +2,11 @@
 // Copyright 2021 Muhammed Abdalla muhabda@bu.edu
 // Copyright 2021 Johnson Yang johnsony@bu.edu
 
+#include <cstdio>
+#include <iostream>
 #include <vector>
 #include <string>
-#include <iostream>
+
 using std::string;
 using std::to_string;
 
@@ -33,9 +35,12 @@ class Matrix {
 // OVERLOADING COMMANDS: MATRIX PRINT
 std::ostream& operator<<(std::ostream& os, Matrix& A) {
   string viewMatrix;
-  for (int i = 0; i < A.r; i++){
-    for (int j = 0; j < A.c; j++)
-      viewMatrix += to_string(A.at(i, j)) + ' ';
+  char num[20];
+  for (int i = 0; i < A.r; i++) {
+    for (int j = 0; j < A.c; j++) {
+      std::sprintf(num, "%.2f ", A.at(i, j));
+      viewMatrix += string(num);
+    }
     viewMatrix += '\n';
   }
   os << viewMatrix;
@@ -45,8 +50,11 @@ std::ostream& operator<<(std::ostream& os, Matrix& A) {
 // OVERLOADING COMMANDS: VECTOR PRINT (AS COLUMNS)
 std::ostream& operator<<(std::ostream& os, std::vector<double>& vec) {
   string viewVector;
-  for (auto i : vec)
-    viewVector += to_string(i) + '\n';
+  char num[20];
+  for (auto i : vec) {
+    std::sprintf(num, "%.2f\n", i);
+    viewVector += string(num);
+  }
   os << viewVector;
   return os;
 }
