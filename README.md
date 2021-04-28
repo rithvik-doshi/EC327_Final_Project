@@ -37,10 +37,4 @@ make uimain
 ```
 
 
-## Known Bugs
-- Inverse Matrices for 3x3 matrices and above
-- Co-factoring for 3x3 matrices and above 
-- No error-checking for invalid statements in pemdas.cpp, such as "\*\+28\-3", statements involving negative answers such as '9\-19', and dividing by zero.
 
-## Changelogs
-- 4/22/21 BETA 0.1 basic Matrix functions and 2x2 inverses
