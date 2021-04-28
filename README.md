@@ -5,11 +5,11 @@
 This application will allow you to perform several mathematical operations that applications such as MATLAB allow you to do, minus a subscription and coding
 experience. The app is split into three compnents:
 
-1. Pemdas: Allows you to evaluate simple calculations involving the operands '\+', '\-', '\*', '/', '^', and '()'.
+1. Pemdas: Allows you to evaluate simple calculations involving the operands '\+', '\-', '\*', '/', '^', and '()'.  
 	a. 8\*8 --> 64  
 	b. 7^3 --> 343  
-	c. 9\+(7/3\+5) --> 16.333333
-	d. 88\-64\+23\-45\+101 --> 103
+	c. 9\+(7/3\+5) --> 16.333333  
+	d. 88\-64\+23\-45\+101 --> 103  
 2. Graph: Allows you to plot points from an input file and find the line of best fit according to preference.
 	Testing:
 	a. Make sure that your csv file is included in the current directory. We have included the file 'Data.csv' for you to get started.
