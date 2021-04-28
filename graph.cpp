@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "Best_Fit.h"
 using std::vector;
 using std::pow;
 using std::cout;
@@ -12,25 +13,39 @@ using std::string;
 using std::fstream;
 using std::getline;
 
+
+
+float makeAbsolute(float num){
+  if (num < 0){
+    return num*-1;
+  } else {
+    return num*1;
+  }
+}
+
 int main(){
-  //values that are interchangable
-  float ysetmax = 500, xsetmax = 500;
-  float xpointmin = -10, xpointmax = 10;
-  string filename = "Data.txt";
-  float ypointmin, ypointmax;
+  float xpointmin=-10, xpointmax=20; 
+  string filename = "data.csv";
+  string lobftype = "linear";
+
+  std::transform(lobftype.begin(), lobftype.end(), lobftype.begin(),
+    [](unsigned char c){ return tolower(c); });
 
   //reading a file
   fstream myfile;
   vector <string> filereader;
   string s;
-  
   //values that are not interchangable
-  vector <int> x,y;
+  vector <double> lineOfFit;
+  float ysetmax = 500, xsetmax = 500;
+  float ypointmin, ypointmax;
+  vector <float> x,y;
   vector <float> originalX, originalY;
+  vector <double> originalXdouble, originalYdouble;
   float yscale, xscale, originalYmax, originalYmin;
   int i,j, placeholder, deviation, count = 0, count2=0;
   int xpointmaxgraph = xpointmax, xpointmingraph = xpointmin;
-  float offsetx = ((abs(xpointmin)+0.0)/(abs(xpointmin)+abs(xpointmax)));
+  float offsetx = ((makeAbsolute(xpointmin)+0.0)/(makeAbsolute(xpointmin)+makeAbsolute(xpointmax)));
   float originx = offsetx*xsetmax;
 
   myfile.open(filename);
@@ -45,24 +60,41 @@ int main(){
           s.push_back(e.at(j));
         }
         originalX.push_back(stoi(s));
+        originalXdouble.push_back(stod(s));
         s.clear();
         for (j=i+1;j<e.length();j++){
           s.push_back(e.at(j));
         }
         originalY.push_back(stof(s));
+        originalYdouble.push_back(stod(s));
       }
     }
   }
-
   //getting x-negative values
-  for (i=0;i<=abs(xpointmax)+abs(xpointmin);i++){
+  for (i=0;i<mak)
+
+  for (i=0;i<=makeAbsolute(xpointmax)+makeAbsolute(xpointmin);i++){
     x.push_back(i+xpointmin);
   }
 
   //getting y values
-
-  for (auto e:x){
-    y.push_back(9*pow(e,2)-3);
+  if (lobftype == "linear"){
+    Linear_Fit LbF(originalXdouble,originalYdouble);
+    for (auto e:x){
+    y.push_back(LbF.x.at(0)*e+LbF.x.at(1));
+  }
+  }
+  if (lobftype == "exponential"){
+    Exponential_Fit EbF(originalXdouble,originalYdouble);
+    float e = 2.71828;
+    for (auto t:x){
+      y.push_back((pow(e,EbF.k*t))*EbF.N);
+    }
+  }
+  if (lobftype == "none"){
+    for (auto e:x){
+      y.push_back(originalY.at(0));
+    }
   }
 
 
@@ -79,9 +111,9 @@ int main(){
       originalYmax = e;
     }
   }
-  /*if (originalYmax > ypointmax){
+  if (originalYmax > ypointmax){
     ypointmax = originalYmax;
-  }*/
+  }
 
   //getting min y
 
@@ -98,28 +130,23 @@ int main(){
     }
   }
 
-
-  /*if (originalYmin < ypointmin){
-    ypointmin = originalYmin;
-  }*/
-
-  if (ypointmin == 0){
+  //cout << ypointmax << ' ' << makeAbsolute(ypointmax) << ' ' << makeAbsolute(ypointmin)/10 << '\n';
+  if (makeAbsolute(ypointmin) < makeAbsolute(ypointmax)/10){
     ypointmin = -(ypointmax/10);
   }
-  if (ypointmax == 0){
+  if (makeAbsolute(ypointmax) < makeAbsolute(ypointmin)/10){
     ypointmax = -(ypointmin/10);
   }
+  //cout << ypointmax << '\n';
 
-  int ypointmingraph = ypointmin, ypointmaxgraph = ypointmax;
-  float offsety = ((abs(ypointmax)+0.0)/((abs(ypointmin)+abs(ypointmax))));
+  float offsety = ((makeAbsolute(ypointmax)+0.0)/((makeAbsolute(ypointmin)+makeAbsolute(ypointmax))));
   float originy = offsety*ysetmax;
   //cout << offsety << ' ' << originy << '\n';
   
   //getting x scale
-  xscale = xsetmax/(abs(xpointmax)+abs(xpointmin));
+  xscale = xsetmax/(makeAbsolute(xpointmax)+makeAbsolute(xpointmin));
   //getting y scale
-  yscale = ysetmax/(abs(ypointmax)+abs(ypointmin));
-
+  yscale = ysetmax/(makeAbsolute(ypointmax)+makeAbsolute(ypointmin));
 
   sf::RenderWindow window(sf::VideoMode(xsetmax,ysetmax),"Graph");
   window.setFramerateLimit(120);
@@ -144,13 +171,13 @@ int main(){
   //cout << originx << ' ' << originy << '\n';
 
   //creating text
-  sf::Text ymaxtext(to_string(ypointmaxgraph), font);
+  sf::Text ymaxtext(to_string(ypointmax), font);
   ymaxtext.setCharacterSize(10);
   ymaxtext.setFillColor(sf::Color::White);
   ymaxtext.setPosition(originx,0);
   window.draw(ymaxtext);
 
-  sf::Text ymintext(to_string(ypointmingraph), font);
+  sf::Text ymintext(to_string(ypointmin), font);
   ymintext.setCharacterSize(10);
   ymintext.setFillColor(sf::Color::White);
   ymintext.setPosition(originx,ysetmax-10);
@@ -181,19 +208,22 @@ int main(){
   sf::CircleShape coord;
   coord.setRadius(2);
   coord.setFillColor(sf::Color::White);
-  coord.setPosition(x.at(count)*xscale+originx,-(y.at(count)*yscale+originy));
+  coord.setPosition(x.at(count)*xscale+originx-2,-(y.at(count)*yscale+originy-2));
   window.draw(coord);
+  if (lobftype == "none"){
+    coord.setFillColor(sf::Color::Transparent);
+  }
 
   sf::CircleShape ogCoord;
   ogCoord.setRadius(2);
   ogCoord.setFillColor(sf::Color::Blue);
-  ogCoord.setPosition(originalX.at(count)*xscale+originx,(originalY.at(count)*yscale+originy));
+  ogCoord.setPosition(originalX.at(count)*xscale+originx-2,(originalY.at(count)*yscale+originy-2));
   window.draw(ogCoord);
 
-  /*cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << ' ';
-  cout << (originalX.at(count)*xscale)+originx << ' ' << (originalY.at(count)*yscale)+originy << ' ';
-  cout << originalX.at(count) << ' ' << originalY.at(count) << ' ';
-  cout << x.at(count) << ' ' << y.at(count) << '\n';*/
+  //cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << ' ';
+  //cout << (originalX.at(count)*xscale)+originx << ' ' << (originalY.at(count)*yscale)+originy << ' ';
+  //cout << originalX.at(count) << ' ' << originalY.at(count) << ' ';
+  //cout << x.at(count) << ' ' << y.at(count) << '\n';
 
   //running window
   while (window.isOpen()){
@@ -204,16 +234,16 @@ int main(){
     window.draw(ogCoord);
     if (count < x.size()-1){
       count++;
-      coord.setPosition((x.at(count)*xscale)+originx,(y.at(count)*yscale)+originy);
+      coord.setPosition((x.at(count)*xscale)+originx-2,(y.at(count)*yscale)+originy-2);
       window.draw(coord);
-      /*cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << ' ';
-      cout << (originalX.at(count)*xscale)+originx<< ' ' << (originalY.at(count)*yscale)+originy << ' ';
-      cout << originalX.at(count) << ' ' << originalY.at(count) << ' ';
-      cout << x.at(count) << ' ' << y.at(count) << '\n';*/
+      //cout << (x.at(count)*xscale)+originx << ' ' << (y.at(count)*yscale)+originy << ' ';
+      //cout << (originalX.at(count)*xscale)+originx<< ' ' << (originalY.at(count)*yscale)+originy << ' ';
+      //cout << originalX.at(count) << ' ' << originalY.at(count) << ' ';
+      //cout << x.at(count) << ' ' << y.at(count) << '\n';
     }
     if (count2 < originalX.size()-1){
       count2++;
-      ogCoord.setPosition((originalX.at(count)*xscale)+originx,(originalY.at(count)*yscale)+originy);
+      ogCoord.setPosition((originalX.at(count)*xscale)+originx-2,(originalY.at(count)*yscale)+originy-2);
       window.draw(ogCoord);
     }
     window.display();
