@@ -802,7 +802,7 @@ int main() {
         sf::Cursor arrow;
         arrow.loadFromSystem(sf::Cursor::Arrow);
 
-        if (inRange(ploc, event.mouseMove) || inRange(gloc, event.mouseMove) || inRange(mloc, event.mouseMove)) {
+        if (inRange(ploc, event.mouseMove) || inRange(gloc, event.mouseMove) || inRange(mloc, event.mouseMove) || inRange(abloc, event.mouseMove)){
           App.setMouseCursor(hand);
         } else {
           App.setMouseCursor(arrow);
