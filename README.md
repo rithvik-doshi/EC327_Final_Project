@@ -12,12 +12,19 @@ Many institutions, corportations, students and professors alike will come across
 analyze via graphs and tables. Applications like MATLAB that allow you to do these operations with ease
 are costly, and what we're trying to do is bring the main essense of data analysis into a simple app.
 
-## Installation
+## How To Run
 
-```cpp
-#include <Matrix.h>
-
+1. Make sure your current directory includes the dependencies "pemdas.cpp", "Best_Fit.h", "Matrix.h", and this specific font file is downloaded and in this directory:
+	/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf
+2. In a terminal window, run the command:
 ```
+make uimain
+```
+3. Run the resulting executable:
+```
+./uimain
+```
+
 
 ## Known Bugs
 -- Inverse Matrices for 3x3 matrices and above
