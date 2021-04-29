@@ -16,6 +16,26 @@ experience. The app is split into three compnents:
 	b. Set the x-axis bounds as you wish. Try -15 and 15 to get started.
 	c. Select the type of curve fit you wish to implement, or none if you don't wish to curve fit.
 3. Matrix: Allows you to conduct various matrix operations between two matrices of your choosing.
+	Test Cases:  
+		3,3,3/4,4,4/6,6,6  
+		m  
+		1,2,3/7,8,9/3,2,5  
+  
+		returns:  
+  
+		33.000000 36.000000 51.000000  
+		44.000000 48.000000 68.000000  
+		66.000000 72.000000 102.000000  
+
+		1,2,3/4,5,6/7,8,9  
+		t  
+		<blank>  
+
+		returns:  
+		1.000000 4.000000 7.000000  
+		2.000000 5.000000 8.000000  
+		3.000000 6.000000 9.000000  
+
 
 ## Usage
 
