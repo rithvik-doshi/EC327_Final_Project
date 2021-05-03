@@ -226,7 +226,7 @@ void plot(float xpointmin, float xpointmax, string filename, string lobftype){
 
   //creating font
   sf::Font font;
-  font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
+  font.loadFromFile("Ubuntu-BI.ttf");
 
   //cout << originx << ' ' << originy << '\n';
 
@@ -317,7 +317,7 @@ int main() {
   sf::RectangleShape Matrixs(sf::Vector2f(200, 100));
   sf::RectangleShape Back(sf::Vector2f(200, 100));
   sf::Font font;
-  font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
+  font.loadFromFile("Ubuntu-BI.ttf");
   sf::Text title;
   title.setString("Calculator App 1.0-beta1.1");
   title.setCharacterSize(69);
